@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:kasie_transie_library/auth/phone_auth_signin.dart';
 import 'package:kasie_transie_library/bloc/data_api_dog.dart';
 import 'package:kasie_transie_library/data/schemas.dart' as lib;
-import 'package:kasie_transie_library/providers/kasie_providers.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/utils/navigator_utils.dart';
 import 'package:kasie_transie_library/auth/email_auth_signin.dart';

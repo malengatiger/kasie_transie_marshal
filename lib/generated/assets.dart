@@ -5,6 +5,8 @@ class Assets {
   static const String assetsAnalysisOptions = 'assets/analysis_options.png';
   static const String assetsAvatar = 'assets/avatar.png';
   static const String assetsBatman = 'assets/batman.png';
+  static const String assetsBeep1 = 'assets/beep1.mp3';
+  static const String assetsBeep2 = 'assets/beep2.wav';
   static const String assetsFilesPeople = 'assets/files/people.json';
   static const String assetsGio = 'assets/gio.png';
   static const String assetsIntlEn = 'assets/intl_en.arb';
@@ -37,6 +39,7 @@ class Assets {
   static const String l10nEs = 'assets/l10n/es.json';
   static const String l10nFr = 'assets/l10n/fr.json';
   static const String l10nIg = 'assets/l10n/ig.json';
+  static const String l10nMyKeys = 'assets/l10n/myKeys.txt';
   static const String l10nPt = 'assets/l10n/pt.json';
   static const String l10nSn = 'assets/l10n/sn.json';
   static const String l10nSt = 'assets/l10n/st.json';
