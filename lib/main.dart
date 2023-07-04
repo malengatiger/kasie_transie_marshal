@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kasie_transie_library/bloc/data_api_dog.dart';
-import 'package:kasie_transie_library/bloc/list_api_dog.dart';
 import 'package:kasie_transie_library/bloc/theme_bloc.dart';
 import 'package:kasie_transie_library/data/schemas.dart' as lib;
 import 'package:kasie_transie_library/providers/kasie_providers.dart';
@@ -14,9 +13,9 @@ import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_marshal/ui/dashboard.dart';
 import 'package:page_transition/page_transition.dart';
 
+import 'auth/phone_auth_signin.dart';
 import 'firebase_options.dart';
 import 'intro/splash_page.dart';
-import 'landing_page.dart';
 
 late FirebaseApp firebaseApp;
 fb.User? fbAuthedUser;
@@ -72,26 +71,22 @@ class KasieTransieApp extends ConsumerWidget {
 
           return MaterialApp(
               debugShowCheckedModeBanner: false,
-              title: 'KasieTransie',
+              title: 'Marshal',
               theme: themeBloc.getTheme(themeIndex).lightTheme,
               darkTheme: themeBloc.getTheme(themeIndex).darkTheme,
               themeMode: ThemeMode.system,
+              // home:  const Dashboard(),
               home: AnimatedSplashScreen(
                 splash: const SplashWidget(),
                 animationDuration: const Duration(milliseconds: 2000),
                 curve: Curves.easeInCirc,
                 splashIconSize: 160.0,
-                nextScreen: me == null
-                    ? LandingPage(
-                    listApiDog: listApiDog,
-                    dataApiDog: dataApiDog,
-                    prefs: prefs)
-                    : const Dashboard(),
-
+                nextScreen: const Dashboard(),
                 splashTransition: SplashTransition.fadeTransition,
                 pageTransitionType: PageTransitionType.leftToRight,
-                backgroundColor: Colors.indigo.shade900,
-              ));
+                backgroundColor: Colors.brown.shade800,
+              ),
+          );
         });
   }
 }

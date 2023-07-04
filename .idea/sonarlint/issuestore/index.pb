@@ -5,10 +5,6 @@ Y
 )android/kasie_transie_marshal_android.iml,8/1/81595593cd37767bbd30a9e734c3987c85be2b84
 U
 %.idea/libraries/KotlinJavaRuntime.xml,0/2/02ddf5725f2ec9b67991423205d2b1a2009ccd06
-S
-#.idea/libraries/Flutter_Plugins.xml,e/8/e8bbc0fdfcefee9aa7b463c83a8a480b92333860
-Q
-!.idea/libraries/Dart_Packages.xml,f/c/fc67c2d2441e33af1dbd1e910281523d1ce74b4a
 L
 .idea/libraries/Dart_SDK.xml,a/9/a9cc79449f536988c9a3fd2c84e3dfda3be04f09
 U
@@ -33,8 +29,6 @@ U
 %macos/Runner/GoogleService-Info.plist,e/0/e0374accc7af5fd64c30d08233dce2fbffc36e87
 B
 assets/intl_en.arb,9/1/9119b1dcb10f1597aedefbf6d7588e2cc0924485
-E
-lib/landing_page.dart,2/7/27906c89929fef29bf5009924a0c6fbca1e5a21f
 G
 assets/files/people.csv,0/0/00d79e0e826397b2e114a1189d6848b9dda3fd65
 H
@@ -43,8 +37,6 @@ H
 ios/Podfile,5/1/510807778b56990ed3829592aea48d7a35b42809
 =
 macos/Podfile,6/4/64d67c25b6ef192830bfd3132cbb847fff8cb5b9
-J
-lib/intro/splash_page.dart,5/1/519c5669eb9f9000279cb6abe40f1287040a0798
 w
 G.idea/sonarlint/issuestore/8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d,b/4/b4a0b63ce8560bbc5de0f9995c20cc861dc2adb3
 Å
@@ -129,8 +121,6 @@ U
 %linux/flutter/generated_plugins.cmake,e/a/ea61ff9ff38cb6431283c0e1c4f383234ad068aa
 W
 'windows/flutter/generated_plugins.cmake,8/8/88ca6865187a33a9504c7309c5e20c833b7b0094
-]
--macos/Flutter/GeneratedPluginRegistrant.swift,0/2/021794e7deab8f440a40813c70fb58a0cddd4d00
 P
  android/app/google-services.json,e/e/ee748fb75df5665a631a74614646f499f3cea78f
 I
@@ -161,8 +151,6 @@ k
 linux/main.cc,7/7/77ed47152ab3585d070f0b1236a1ec91d1ecb3a9
 G
 windows/runner/main.cpp,8/7/87020f762a3a20b98f349e0d64cb0d5df336a573
-=
-lib/main.dart,a/8/a8ea5273939a12e805641671b79e5eaeaab1e231
 U
 %ios/Runner/Base.lproj/Main.storyboard,a/9/a9447b23bf39469cf6b0c9d663f74e171b0f4660
 z
@@ -177,8 +165,6 @@ G
 linux/my_application.cc,9/9/995c5ee66ec6a6d46ba2668734a5503c7d0cdf32
 F
 linux/my_application.h,a/5/a56e4501a358577d0ee3aebac03b481b676cfc32
-T
-$ios/Runner.xcodeproj/project.pbxproj,1/c/1cac92320f17044ec005b6a831fa994f54fba1bc
 V
 &macos/Runner.xcodeproj/project.pbxproj,3/1/31740756e7b30b7d19cf1933c368ae7438ea33ef
 i
@@ -195,8 +181,6 @@ R
 "windows/runner/runner.exe.manifest,d/b/db74675c74ce360873d6e454daf2092487c293d4
 H
 windows/runner/Runner.rc,e/3/e37ad19aa89db29acd2516536be96b72ca8de4bf
-k
-;ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme,4/1/415f525025d2a854fce8d86570ada9443c42c5a6
 m
 =macos/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme,3/1/3148bc763b53b8b8750bb6c9a3d55991c96b1aeb
 S
@@ -227,3 +211,11 @@ M
 Rios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings,d/e/dec276cb6c82fdeae325108bd526a78dcab4ee15
 p
 @ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings,e/e/ee07b9792b3a42aff7f72cdd193871e00fdd9be4
+<
+pubspec.yaml,e/8/e8e045469170189f1d6ef12576bd01af132b1018
+I
+lib/generated/assets.dart,5/b/5b815209f3ac1d4b94a4211dbfb903428d4ed1c2
+M
+lib/intro/intro_page_one.dart,4/6/464c2440c935f8ad7fe225cee4b37dbc68b30b09
+J
+lib/intro/splash_page.dart,5/1/519c5669eb9f9000279cb6abe40f1287040a0798

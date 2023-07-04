@@ -3,14 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:kasie_transie_library/auth/phone_auth_signin.dart';
 import 'package:kasie_transie_library/bloc/data_api_dog.dart';
-import 'package:kasie_transie_library/data/schemas.dart' as lib;
+import 'package:kasie_transie_library/utils/emojis.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/utils/navigator_utils.dart';
 import 'package:kasie_transie_library/auth/email_auth_signin.dart';
 
 import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_marshal/ui/dashboard.dart';
-
 import 'intro_page_one.dart';
 
 class KasieIntro extends StatefulWidget {
@@ -76,43 +75,42 @@ class KasieIntroState extends State<KasieIntro>
   onSignInWithEmail() async {
     pp('$mm ...  onSignInWithEmail');
 
-    var res = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => const EmailAuthSignin()));
-    pp('$mm ... returned from sign in .... $res');
-    if (res is lib.User) {
-      pp('$mm ... returned from sign in .... $res');
-      pp('$mm ... User is fine to this point');
-
-      onSuccessfulSignIn(res);
-    }
+    navigateWithScale(EmailAuthSignin(onGoodSignIn: (){
+      onSuccessfulSignIn();
+    }, onSignInError: (){
+      onFailedSignIn();
+    }), context);
   }
 
   onSignInWithPhone() async {
     pp('$mm ... onSignInWithPhone ....');
 
-    var res = await Navigator.of(context).push(MaterialPageRoute(
+    Navigator.of(context).push(MaterialPageRoute(
         builder: (ctx) => PhoneAuthSignin(
-            dataApiDog: widget.dataApiDog,
-            onSuccessfulSignIn: onSuccessfulSignIn)));
-    pp('$mm ... returned from sign in .... $res');
-    if (res is lib.User) {
-      pp('$mm ... returned from sign in .... $res');
-      pp('$mm ... User is fine to this point');
-      onSuccessfulSignIn(res);
-    }
+            dataApiDog: widget.dataApiDog, onGoodSignIn: (){
+          pp('$mm ................................'
+              '... onGoodSignIn .... ');
+              onSuccessfulSignIn();
+        }, onSignInError: (){
+          pp('$mm ................................'
+              '... onSignInError ${E.redDot} .... ');
+              onFailedSignIn();
+        },)));
+
   }
 
   onRegister() {
     pp('$mm ... onRegister ....');
   }
 
-  void onSignIn() async {
+  void onFailedSignIn() {
+    pp('$mm ... onFailedSignIn ....');
 
   }
-
-  void onSuccessfulSignIn(lib.User p1) {
-    pp('$mm ... onSuccessfulSignIn .... ${p1.name}');
-    //Navigator.of(context).pop(p1);
+  void onSuccessfulSignIn() {
+    pp('$mm ................................'
+        '... onSuccessfulSignIn .... ');
+    Navigator.of(context).pop();
     navigateWithScale(
         const Dashboard(),
         context);

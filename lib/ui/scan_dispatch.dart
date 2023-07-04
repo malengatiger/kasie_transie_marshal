@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +14,7 @@ import 'package:kasie_transie_library/utils/parsers.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_library/widgets/qr_scanner.dart';
 import 'package:kasie_transie_library/widgets/route_widget.dart';
+import 'package:kasie_transie_marshal/ui/dispatch_helper.dart';
 import 'package:realm/realm.dart';
 import 'package:badges/badges.dart' as bd;
 
@@ -41,7 +44,6 @@ class ScanDispatchState extends State<ScanDispatch>
   lib.Route? selectedRoute;
   lib.Vehicle? scannedVehicle;
   bool busy = false;
-
   @override
   void initState() {
     _controller = AnimationController(vsync: this);
@@ -146,13 +148,14 @@ class ScanDispatchState extends State<ScanDispatch>
       //
       pp('$mm ... _doDispatch: dispatch to be added:  ');
       dispatches.insert(0,m);
+      dispatchHelper.sendDispatch(m);
       _clearFields();
       final result = await dispatchIsolate.addDispatchRecord(m);
       pp('$mm ... _doDispatch added?:  ');
       myPrettyJsonPrint(result.toJson());
     } catch (e) {
       pp(e);
-      await cacheManager.saveDispatchRecord(m);
+      //await cacheManager.saveDispatchRecord(m);
       if (mounted) {
         showSnackBar(
             padding: 16,
@@ -288,6 +291,13 @@ class ScanDispatchState extends State<ScanDispatch>
     });
   }
 
+  void handleScannedCar(lib.Vehicle car) async {
+    pp('$mm scanned car received: ${car.vehicleReg}');
+    setState(() {
+      scannedVehicle = car;
+    });
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -373,8 +383,7 @@ class ScanDispatchState extends State<ScanDispatch>
                             ))
                         : QRScanner(
                             onCarScanned: (car) {
-                              scannedVehicle = car;
-                              setState(() {});
+                              handleScannedCar(car);
                             },
                             onUserScanned: (user) {},
                             onError: () {

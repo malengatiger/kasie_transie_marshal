@@ -38,18 +38,7 @@ class LandingPageState extends State<LandingPage>
 
   void _initialize() async {
     pp('$mm ..... check settings and fix if needed!');
-    final user = await prefs.getUser();
-    if (user != null) {
-      var sett = await prefs.getSettings();
-      if (sett == null) {
-        final settList = await listApiDog.getSettings(user!.associationId!);
-        if (settList.isNotEmpty) {
-          sett = settList.first;
-          await prefs.saveSettings(sett);
-        }
-        pp('$mm ..... settings fixed!');
-      }
-    }
+
   }
 
   onRouteSelected(lib.Route p1) {
