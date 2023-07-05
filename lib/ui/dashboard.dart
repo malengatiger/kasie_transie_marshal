@@ -15,8 +15,9 @@ import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_library/widgets/language_and_color_chooser.dart';
 import 'package:kasie_transie_marshal/auth/phone_auth_signin.dart';
 import 'package:kasie_transie_marshal/intro/kasie_intro.dart';
-import 'package:kasie_transie_marshal/ui/dispatch_helper.dart';
+import 'package:kasie_transie_library/bloc/dispatch_helper.dart';
 import 'package:kasie_transie_marshal/ui/scan_dispatch.dart';
+import 'package:kasie_transie_library/bloc/dispatch_helper.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({Key? key}) : super(key: key);

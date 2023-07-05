@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:kasie_transie_library/bloc/cache_manager.dart';
 import 'package:kasie_transie_library/data/schemas.dart' as lib;
 import 'package:kasie_transie_library/isolates/dispatch_isolate.dart';
 import 'package:kasie_transie_library/utils/device_location_bloc.dart';
@@ -14,7 +13,7 @@ import 'package:kasie_transie_library/utils/parsers.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_library/widgets/qr_scanner.dart';
 import 'package:kasie_transie_library/widgets/route_widget.dart';
-import 'package:kasie_transie_marshal/ui/dispatch_helper.dart';
+import 'package:kasie_transie_library/bloc/dispatch_helper.dart';
 import 'package:realm/realm.dart';
 import 'package:badges/badges.dart' as bd;
 

@@ -42,7 +42,7 @@ Future<void> main() async {
 }
 
 int themeIndex = 0;
-late Locale locale;
+// late Locale locale;
 lib.User? me;
 
 class KasieTransieApp extends ConsumerWidget {
@@ -63,10 +63,8 @@ class KasieTransieApp extends ConsumerWidget {
           if (snapshot.hasData) {
             pp(' 🔵 🔵 🔵'
                 'build: theme index has changed to ${snapshot.data!.themeIndex}'
-                '  and locale is ${snapshot.data!.locale.toString()}');
+                '  and locale is ${snapshot.data!.locale}');
             themeIndex = snapshot.data!.themeIndex;
-            locale = snapshot.data!.locale;
-            pp(' 🔵 🔵 🔵 GeoApp: build: locale object received from stream: $locale');
           }
 
           return MaterialApp(
