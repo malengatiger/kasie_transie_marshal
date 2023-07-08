@@ -217,3 +217,17 @@ I
 lib/generated/assets.dart,5/b/5b815209f3ac1d4b94a4211dbfb903428d4ed1c2
 J
 lib/intro/splash_page.dart,5/1/519c5669eb9f9000279cb6abe40f1287040a0798
+@
+ios/Podfile.lock,6/f/6fc5efc9eba1a38c53e9a557a6ebda2b662185e1
+<
+pubspec.yaml,e/8/e8e045469170189f1d6ef12576bd01af132b1018
+Q
+!.idea/libraries/Dart_Packages.xml,f/c/fc67c2d2441e33af1dbd1e910281523d1ce74b4a
+^
+.android/app/src/main/res/drawable/app_icon.xml,4/1/41be73f05525cc44d6c6cf9f8c491ad0a1dae296
+O
+lib/auth/phone_auth_signin.dart,e/d/ed017848211d6cf1bb53695f5d95a2b3310634cf
+J
+lib/auth/starter_pack.dart,4/4/44a35d5679db83a07cd8f900adb26e0d65d38a50
+J
+lib/intro/kasie_intro.dart,8/2/82f248876dbd4c1eae928a0af1a06ab11db3b739

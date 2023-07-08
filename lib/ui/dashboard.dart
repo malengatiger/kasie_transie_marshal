@@ -11,17 +11,13 @@ import 'package:kasie_transie_library/isolates/routes_isolate.dart';
 import 'package:kasie_transie_library/l10n/translation_handler.dart';
 import 'package:kasie_transie_library/messaging/fcm_bloc.dart';
 import 'package:kasie_transie_library/providers/kasie_providers.dart';
-import 'package:kasie_transie_library/utils/emojis.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/utils/navigator_utils.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_library/widgets/language_and_color_chooser.dart';
 import 'package:kasie_transie_marshal/auth/phone_auth_signin.dart';
-import 'package:kasie_transie_marshal/intro/kasie_intro.dart';
 import 'package:kasie_transie_library/bloc/dispatch_helper.dart';
-import 'package:kasie_transie_marshal/ui/media_handler.dart';
 import 'package:kasie_transie_marshal/ui/scan_dispatch.dart';
-import 'package:kasie_transie_library/bloc/dispatch_helper.dart';
 import 'package:kasie_transie_marshal/ui/scan_vehicle_for_media.dart';
 
 class Dashboard extends ConsumerStatefulWidget {

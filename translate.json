@@ -1,0 +1,38 @@
+[
+  {"key": "photosAndVideosNow", "text": "Photos and Videos taken now"},
+
+
+
+
+
+
+
+
+
+
+
+
+  {"key": "vehicleMedia", "text": "Vehicle Media"},
+  {"key": "scanTheVehicle", "text": "Scan the vehicle that you want to work with"},
+  {"key": "startPhotoVideo", "text": "Start Photo & Video Capture"},
+  {"key": "noVehicleScanned", "text": "No Vehicle Scanned yet"},
+  {"key": "dispatch", "text": "Dispatch"},
+  {"key": "pleaseSelectRoute", "text": "Please select Route"},
+  {"key": "scannerWaiting", "text": "Scanner waiting for Route selection"},
+  {"key": "cancel", "text": "Cancel"},
+  {"key": "working", "text": "Working ... hang on a few seconds"},
+  {"key": "passengers", "text": "Passengers"},
+  {"key": "vehicleMedia", "text": "Vehicle Media"},
+  {"key": "allPhotosVideos", "text": "All Vehicle Photos and Videos"},
+
+
+  {"key": "takePhotos", "text": "Take Photos"},
+  {"key": "makeVideos", "text": "Make Videos"},
+
+  {"key": "vehiclePhoto", "text": "Vehicle Photo"},
+  {"key": "'recordVideo", "text": "'Record Video"},
+  {"key": "recordingComplete", "text": "Recording complete"},
+  {"key": "fileSize", "text": "File Size"},
+  {"key": "duration", "text": "Duration"},
+  {"key": "waitingToRecordVideo", "text": "Waiting to Record Video"}
+]

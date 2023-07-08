@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:kasie_transie_library/bloc/list_api_dog.dart';
 import 'package:kasie_transie_library/data/schemas.dart' as lib;
 import 'package:kasie_transie_library/isolates/dispatch_isolate.dart';
+import 'package:kasie_transie_library/l10n/translation_handler.dart';
 import 'package:kasie_transie_library/utils/device_location_bloc.dart';
 import 'package:kasie_transie_library/utils/emojis.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
@@ -48,6 +49,7 @@ class ScanDispatchState extends State<ScanDispatch>
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
+    _setTexts();
     _getData();
   }
 
@@ -312,13 +314,24 @@ class ScanDispatchState extends State<ScanDispatch>
     super.dispose();
   }
 
+  String? dispatchText, selectRouteText, scannerWaiting, cancelText, allPhotosVideos;
+  Future _setTexts() async {
+    final c =  await prefs.getColorAndLocale();
+    final loc = c.locale;
+    dispatchText = await translator.translate('dispatch', loc);
+    selectRouteText = await translator.translate('pleaseSelectRoute', loc);
+    scannerWaiting = await translator.translate('scannerWaiting', loc);
+    cancelText = await translator.translate('cancel', loc);
+
+
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Dispatch',
+        title: Text(dispatchText == null?
+          'Dispatch': dispatchText!,
           style: myTextStyleLarge(context),
         ),
         bottom: PreferredSize(
@@ -329,7 +342,8 @@ class ScanDispatchState extends State<ScanDispatch>
               child: Column(
                 children: [
                   selectedRoute == null
-                      ? const Text('Please select Route')
+                      ?  Text(selectRouteText == null?
+                      'Please select Route': selectRouteText!)
                       : TextButton(
                           onPressed: () {
                             setState(() {
@@ -383,8 +397,8 @@ class ScanDispatchState extends State<ScanDispatch>
                                 const SizedBox(
                                   height: 48,
                                 ),
-                                Text(
-                                  'Scanner waiting for Route selection',
+                                Text(scannerWaiting == null?
+                                  'Scanner waiting for Route selection': scannerWaiting!,
                                   style: myTextStyleSmallBold(context),
                                 ),
                               ],
@@ -415,16 +429,18 @@ class ScanDispatchState extends State<ScanDispatch>
                                 onPressed: () {
                                   _clearFields();
                                 },
-                                child: const Text('Cancel')),
+                                child:  Text(cancelText == null?
+                                    'Cancel': cancelText!)),
                             SizedBox(
                                 width: 240,
                                 child: ElevatedButton(
                                     onPressed: () {
                                       _doDispatch();
                                     },
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(16.0),
-                                      child: Text('Dispatch'),
+                                    child:  Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Text(dispatchText == null?
+                                          'Dispatch' : dispatchText!),
                                     ))),
                           ],
                         ),

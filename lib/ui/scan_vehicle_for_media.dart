@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/widgets/qr_scanner.dart';
 import 'package:kasie_transie_library/data/schemas.dart' as lib;
-import 'package:kasie_transie_marshal/ui/media_handler.dart';
+import 'package:kasie_transie_library/widgets/vehicle_media_handler.dart';
 
 class ScanVehicleForMedia extends StatefulWidget {
   const ScanVehicleForMedia({Key? key}) : super(key: key);
@@ -53,11 +53,11 @@ class ScanVehicleForMediaState extends State<ScanVehicleForMedia>
       appBar: AppBar(
         title: const Text('Vehicle Media'),
         bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(400),
+            preferredSize: const Size.fromHeight(420),
             child: Column(
               children: [
                 const SizedBox(
-                  height: 24,
+                  height: 8,
                 ),
                 Text(
                   'Scan Vehicle',
@@ -69,7 +69,7 @@ class ScanVehicleForMediaState extends State<ScanVehicleForMedia>
                   style: myTextStyleSmall(context),
                 ),
                 const SizedBox(
-                  height: 24,
+                  height: 32,
                 ),
                 GestureDetector(
                   onTap: (){
@@ -85,7 +85,10 @@ class ScanVehicleForMediaState extends State<ScanVehicleForMedia>
                     onUserScanned: (u) {},
                     onError: onError, quitAfterScan: true,
                   ),
-                )
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
               ],
             )),
       ),
@@ -99,16 +102,23 @@ class ScanVehicleForMediaState extends State<ScanVehicleForMedia>
                   height: 8,
                 ),
                 vehicle != null
-                    ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ? Column(mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            '${vehicle!.vehicleReg}',
-                            style: myTextStyleMediumLargeWithColor(
-                                context, Theme.of(context).primaryColor, 32),
+                          const SizedBox(
+                            height: 48,
                           ),
-                          // const SizedBox(
-                          //   width: 24,
-                          // ),
+                          Row(mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '${vehicle!.vehicleReg}',
+                                style: myTextStyleMediumLargeWithColor(
+                                    context, Theme.of(context).primaryColor, 40),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 24,
+                          ),
                           ElevatedButton(
                             style: const ButtonStyle(
                               elevation: MaterialStatePropertyAll(8.0)
@@ -117,8 +127,8 @@ class ScanVehicleForMediaState extends State<ScanVehicleForMedia>
                                 navigateToMediaHandler();
                               },
                               child: const Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: Text('Camera!'),
+                                padding: EdgeInsets.all(24.0),
+                                child: Text('Start Photo & Video Capture'),
                               )),
                         ],
                       )
