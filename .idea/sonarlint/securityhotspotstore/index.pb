@@ -211,8 +211,6 @@ G
 0android/app/src/main/res/values-night/styles.xml,4/e/4e6983532b567702817f41cb4202cebaa69c60f5
 V
 &macos/Runner/DebugProfile.entitlements,5/b/5b1dc31e744c96e20d86d4e01688a17d45a81443
-<
-pubspec.yaml,e/8/e8e045469170189f1d6ef12576bd01af132b1018
 M
 lib/intro/intro_page_one.dart,4/6/464c2440c935f8ad7fe225cee4b37dbc68b30b09
 I

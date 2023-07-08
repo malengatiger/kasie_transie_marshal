@@ -7,8 +7,11 @@ import 'package:kasie_transie_library/bloc/data_api_dog.dart';
 import 'package:kasie_transie_library/bloc/list_api_dog.dart';
 import 'package:kasie_transie_library/data/color_and_locale.dart';
 import 'package:kasie_transie_library/data/schemas.dart' as lib;
+import 'package:kasie_transie_library/isolates/routes_isolate.dart';
 import 'package:kasie_transie_library/l10n/translation_handler.dart';
+import 'package:kasie_transie_library/messaging/fcm_bloc.dart';
 import 'package:kasie_transie_library/providers/kasie_providers.dart';
+import 'package:kasie_transie_library/utils/emojis.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/utils/navigator_utils.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
@@ -16,8 +19,10 @@ import 'package:kasie_transie_library/widgets/language_and_color_chooser.dart';
 import 'package:kasie_transie_marshal/auth/phone_auth_signin.dart';
 import 'package:kasie_transie_marshal/intro/kasie_intro.dart';
 import 'package:kasie_transie_library/bloc/dispatch_helper.dart';
+import 'package:kasie_transie_marshal/ui/media_handler.dart';
 import 'package:kasie_transie_marshal/ui/scan_dispatch.dart';
 import 'package:kasie_transie_library/bloc/dispatch_helper.dart';
+import 'package:kasie_transie_marshal/ui/scan_vehicle_for_media.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -39,7 +44,12 @@ class DashboardState extends ConsumerState<Dashboard>
   bool busy = false;
   late ColorAndLocale colorAndLocale;
   bool authed = false;
+
+  lib.VehicleMediaRequest? vehicleMediaRequest;
   late StreamSubscription<lib.DispatchRecord> _streamSubscription;
+  late StreamSubscription<lib.VehicleMediaRequest> _mediaRequestSubscription;
+  late StreamSubscription<lib.RouteUpdateRequest> _routeUpdateSubscription;
+
 
   @override
   void initState() {
@@ -59,6 +69,64 @@ class DashboardState extends ConsumerState<Dashboard>
         });
       }
     });
+    //
+    _mediaRequestSubscription = fcmBloc.vehicleMediaRequestStream.listen((event) {
+      pp('$mm fcmBloc.vehicleMediaRequestStream delivered ${event.vehicleReg}');
+        if (mounted) {
+          _confirmNavigationToPhotos(event);
+        }
+    });
+    //
+    _routeUpdateSubscription = fcmBloc.routeUpdateRequestStream.listen((event) {
+      pp('$mm fcmBloc.routeUpdateRequestStream delivered: ${event.routeName}');
+        _startRouteUpdate(event);
+    });
+  }
+
+  void _confirmNavigationToPhotos(lib.VehicleMediaRequest request) {
+    pp('$mm confirm dialog for navigation to vehicle media control ');
+
+    showDialog(
+        barrierDismissible: false,
+        context: context, builder: (ctx){
+      return AlertDialog(
+        content: Column(
+          children: [
+            const Text('You have been requested to take pictures and or video of the vehicle.\n'
+                'Please tap YES to start the photos or do that at the earliest opportunity.'),
+            const SizedBox(height: 48,),
+            Row(
+              children: [
+                const Text('Vehicle: '),
+                Text('${request.vehicleReg}', style: myTextStyleMediumLargeWithColor(context,
+                    Theme.of(context).primaryColor, 32),)
+              ],
+            ),
+            const SizedBox(height: 48,),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: (){
+            Navigator.of(context).pop();
+          }, child: const Text('Cancel')),
+
+          ElevatedButton(onPressed: (){
+            _navigateToScanVehicleForMedia();
+          }, child:const Text( "Start the Camera")),
+        ],
+      );
+    });
+  }
+
+  void _startRouteUpdate(lib.RouteUpdateRequest request) async {
+    pp('$mm start route update in isolate for ${request.routeName} ...  ');
+    routesIsolate.getRoute(user!.associationId!, request.routeId! );
+
+    if (mounted) {
+      showSnackBar(
+          duration: const Duration(seconds: 10),
+          message: 'Route ${request.routeName} has been refreshed! Thanks', context: context);
+    }
   }
   void _getAuthenticationStatus() async {
     pp('\n\n$mm _getAuthenticationStatus ....... '
@@ -87,6 +155,13 @@ class DashboardState extends ConsumerState<Dashboard>
 
     setState(() {});
   }
+  var requests = <lib.VehicleMediaRequest>[];
+
+  Future _getAssociationVehicleMediaRequests(bool refresh) async {
+    final startDate = DateTime.now().toUtc().subtract(const Duration(days: 30)).toIso8601String();
+    requests = await listApiDog.getAssociationVehicleMediaRequests(user!.associationId!,
+        startDate, refresh);
+  }
 
   Future<void> _navigateToAuth() async {
     var res = await navigateWithScale(
@@ -97,6 +172,12 @@ class DashboardState extends ConsumerState<Dashboard>
     });
     user = await prefs.getUser();
     _getData();
+  }
+
+  void _navigateToScanVehicleForMedia() {
+
+    pp('$mm navigate to ScanVehicleForMedia ...  ');
+    navigateWithScale(const ScanVehicleForMedia(), context);
   }
 
   Future _getData() async {
@@ -114,6 +195,7 @@ class DashboardState extends ConsumerState<Dashboard>
         await _getLandmarks();
         await _getCars();
         await _getDispatches();
+        await _getAssociationVehicleMediaRequests(false);
         _setTexts();
       }
     } catch (e) {
@@ -197,6 +279,9 @@ class DashboardState extends ConsumerState<Dashboard>
   @override
   void dispose() {
     _controller.dispose();
+    _streamSubscription.cancel();
+    _routeUpdateSubscription.cancel();
+    _mediaRequestSubscription.cancel();
     super.dispose();
   }
 
@@ -228,11 +313,10 @@ class DashboardState extends ConsumerState<Dashboard>
               actions: [
                 IconButton(
                     onPressed: () {
-                      navigateWithScale(
-                          KasieIntro(dataApiDog: dataApiDog), context);
+                      _navigateToScanVehicleForMedia();
                     },
                     icon: Icon(
-                      Icons.info_outline,
+                      Icons.camera_alt,
                       color: Theme.of(context).primaryColor,
                     )),
                 IconButton(

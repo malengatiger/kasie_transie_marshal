@@ -211,8 +211,6 @@ M
 Rios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings,d/e/dec276cb6c82fdeae325108bd526a78dcab4ee15
 p
 @ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings,e/e/ee07b9792b3a42aff7f72cdd193871e00fdd9be4
-<
-pubspec.yaml,e/8/e8e045469170189f1d6ef12576bd01af132b1018
 I
 lib/generated/assets.dart,5/b/5b815209f3ac1d4b94a4211dbfb903428d4ed1c2
 M

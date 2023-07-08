@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:kasie_transie_library/bloc/list_api_dog.dart';
 import 'package:kasie_transie_library/data/schemas.dart' as lib;
 import 'package:kasie_transie_library/isolates/dispatch_isolate.dart';
 import 'package:kasie_transie_library/utils/device_location_bloc.dart';
@@ -50,6 +51,13 @@ class ScanDispatchState extends State<ScanDispatch>
     _getData();
   }
 
+  var requests = <lib.VehicleMediaRequest>[];
+
+  Future _getAssociationVehicleMediaRequests(bool refresh) async {
+    final startDate = DateTime.now().toUtc().subtract(const Duration(days: 30)).toIso8601String();
+    requests = await listApiDog.getAssociationVehicleMediaRequests(user!.associationId!,
+        startDate, refresh);
+  }
   Future _getData() async {
     pp('$mm ... get data ....................');
     setState(() {
@@ -63,6 +71,7 @@ class ScanDispatchState extends State<ScanDispatch>
           busy = false;
         });
       }
+      await _getAssociationVehicleMediaRequests(false);
       await _getRoutes();
     } catch (e) {
       pp(e);
@@ -387,7 +396,7 @@ class ScanDispatchState extends State<ScanDispatch>
                             onUserScanned: (user) {},
                             onError: () {
                               handleScanError();
-                            },
+                            }, quitAfterScan: false,
                           ),
                   ),
                   const SizedBox(
