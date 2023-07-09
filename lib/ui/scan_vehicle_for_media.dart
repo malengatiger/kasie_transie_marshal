@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kasie_transie_library/l10n/translation_handler.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
+import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_library/widgets/qr_scanner.dart';
 import 'package:kasie_transie_library/data/schemas.dart' as lib;
 import 'package:kasie_transie_library/widgets/vehicle_media_handler.dart';
@@ -21,6 +23,7 @@ class ScanVehicleForMediaState extends State<ScanVehicleForMedia>
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
+    _setTexts();
   }
 
   @override
@@ -46,12 +49,29 @@ class ScanVehicleForMediaState extends State<ScanVehicleForMedia>
   }
 
   void onError() {}
+  String? vehicleMedia, scanVehicle, scanTheVehicle, startPhotoVideo, noVehicleScanned;
+
+  void _setTexts() async {
+    pp('$mm ... _setTexts ...');
+    final c = await prefs.getColorAndLocale();
+    vehicleMedia = await translator.translate('vehicleMedia', c.locale);
+    scanVehicle = await translator.translate('scanVehicle', c.locale);
+    scanTheVehicle = await translator.translate('scanTheVehicle', c.locale);
+    startPhotoVideo = await translator.translate('startPhotoVideo', c.locale);
+    noVehicleScanned = await translator.translate('noVehicleScanned', c.locale);
+    pp('$mm ... _setTexts ... setting state, vehicleMedia: $vehicleMedia with locale: ${c.locale}');
+
+    setState(() {
+
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: const Text('Vehicle Media'),
+        title:  Text(vehicleMedia == null?
+            'Vehicle Media':vehicleMedia!),
         bottom: PreferredSize(
             preferredSize: const Size.fromHeight(420),
             child: Column(
@@ -59,13 +79,13 @@ class ScanVehicleForMediaState extends State<ScanVehicleForMedia>
                 const SizedBox(
                   height: 8,
                 ),
-                Text(
-                  'Scan Vehicle',
+                Text(scanVehicle == null?
+                  'Scan Vehicle':scanVehicle!,
                   style: myTextStyleMediumLargeWithColor(
                       context, Theme.of(context).primaryColor, 28),
                 ),
-                Text(
-                  'Scan the vehicle that you want to work with',
+                Text(scanTheVehicle == null?
+                  'Scan the vehicle that you want to work with': scanTheVehicle!,
                   style: myTextStyleSmall(context),
                 ),
                 const SizedBox(
@@ -126,14 +146,15 @@ class ScanVehicleForMediaState extends State<ScanVehicleForMedia>
                               onPressed: () {
                                 navigateToMediaHandler();
                               },
-                              child: const Padding(
-                                padding: EdgeInsets.all(24.0),
-                                child: Text('Start Photo & Video Capture'),
+                              child:  Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Text(startPhotoVideo == null?
+                                    'Start Photo & Video Capture': startPhotoVideo!),
                               )),
                         ],
                       )
-                    : Text(
-                        'No Vehicle Scanned yet',
+                    : Text(noVehicleScanned == null?
+                        'No Vehicle Scanned yet':noVehicleScanned!,
                         style: myTextStyleMediumLargeWithColor(
                             context, Colors.grey.shade700, 20),
                       ),

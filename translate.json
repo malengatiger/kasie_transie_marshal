@@ -1,5 +1,20 @@
 [
-  {"key": "photosAndVideosNow", "text": "Photos and Videos taken now"},
+  {"key": "pleaseTakePhotosVideos", "text": "Please take photographs or videos of this vehicle when you are done with the dispatch. Thank You!"},
+
+
+
+
+
+  {"key": "dispatchTaxi", "text": "Dispatch Taxi?"},
+  {"key": "no", "text": "No"},
+  {"key": "yes", "text": "Yes"},
+  {"key": "vehicleDispatched", "text": "Vehicle has been dispatched"},
+  {"key": "dispatches", "text": "Dispatches"},
+  {"key": "dispatchFailed", "text": "Vehicle dispatched has failed. Please try again"},
+  {"key": "numberDispatches", "text": "Number of dispatches"},
+  {"key": "confirmDispatch", "text": "Please press Yes to confirm dispatch"},
+
+
 
 
 
@@ -13,7 +28,6 @@
 
 
   {"key": "vehicleMedia", "text": "Vehicle Media"},
-  {"key": "scanTheVehicle", "text": "Scan the vehicle that you want to work with"},
   {"key": "startPhotoVideo", "text": "Start Photo & Video Capture"},
   {"key": "noVehicleScanned", "text": "No Vehicle Scanned yet"},
   {"key": "dispatch", "text": "Dispatch"},

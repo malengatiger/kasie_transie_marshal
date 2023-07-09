@@ -16,6 +16,7 @@ import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_library/widgets/qr_scanner.dart';
 import 'package:kasie_transie_library/widgets/route_widget.dart';
 import 'package:kasie_transie_library/bloc/dispatch_helper.dart';
+import 'package:kasie_transie_marshal/ui/media_reminder.dart';
 import 'package:realm/realm.dart';
 import 'package:badges/badges.dart' as bd;
 
@@ -56,9 +57,26 @@ class ScanDispatchState extends State<ScanDispatch>
   var requests = <lib.VehicleMediaRequest>[];
 
   Future _getAssociationVehicleMediaRequests(bool refresh) async {
-    final startDate = DateTime.now().toUtc().subtract(const Duration(days: 30)).toIso8601String();
-    requests = await listApiDog.getAssociationVehicleMediaRequests(user!.associationId!,
-        startDate, refresh);
+    final startDate = DateTime.now()
+        .toUtc()
+        .subtract(const Duration(days: 30))
+        .toIso8601String();
+
+    requests = await listApiDog.getAssociationVehicleMediaRequests(
+        user!.associationId!, startDate, refresh);
+  }
+
+  bool showMediaRequestMessage = false;
+  void _checkVehicleMediaRequest() {
+    showMediaRequestMessage = false;
+      for (var value in requests) {
+        if (scannedVehicle!.vehicleId! == value.vehicleId ) {
+          setState(() {
+            showMediaRequestMessage = true;
+          });
+          break;
+        }
+      }
   }
   Future _getData() async {
     pp('$mm ... get data ....................');
@@ -73,7 +91,7 @@ class ScanDispatchState extends State<ScanDispatch>
           busy = false;
         });
       }
-      await _getAssociationVehicleMediaRequests(false);
+      await _getAssociationVehicleMediaRequests(true);
       await _getRoutes();
     } catch (e) {
       pp(e);
@@ -117,7 +135,7 @@ class ScanDispatchState extends State<ScanDispatch>
   int passengerCount = 0;
 
   Future _doDispatch() async {
-    pp('$mm ... start dispatch for ${scannedVehicle!.vehicleReg}');
+    pp('$mm ... start dispatch for .... ${scannedVehicle!.vehicleReg}');
     _confirmPassengerCount();
     //await _sendTheDispatchRecord();
     setState(() {
@@ -157,7 +175,7 @@ class ScanDispatchState extends State<ScanDispatch>
           landmarkId: mark?.landmarkId);
       //
       pp('$mm ... _doDispatch: dispatch to be added:  ');
-      dispatches.insert(0,m);
+      dispatches.insert(0, m);
       dispatchHelper.sendDispatch(m);
       _clearFields();
       final result = await dispatchIsolate.addDispatchRecord(m);
@@ -203,9 +221,21 @@ class ScanDispatchState extends State<ScanDispatch>
       passengerCount = 0;
       _showDispatches = true;
       _showRoutes = false;
+      showMediaRequestMessage = false;
     });
   }
 
+  bool _checkIfVehicleMediaRequested() {
+    if (scannedVehicle == null) {
+      return false;
+    }
+    for (var value in requests) {
+      if (value.vehicleId == scannedVehicle!.vehicleId) {
+        return true;
+      }
+    }
+    return false;
+  }
   void _confirmPassengerCount() {
     showDialog(
         context: context,
@@ -214,39 +244,42 @@ class ScanDispatchState extends State<ScanDispatch>
           return AlertDialog(
             elevation: 16.0,
             shape: getRoundedBorder(radius: 16),
-            title: Text(
-              'Dispatch Taxi?',
+            title: Text(dispatchTaxi == null?
+              'Dispatch Taxi?': dispatchTaxi! ,
               style: myTextStyleMediumLargeWithColor(
                   context, Theme.of(context).primaryColor, 24),
             ),
             content: Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
-                height: 300,
+                height: 420, width: 400,
                 child: Column(
                   children: [
                     const SizedBox(
                       height: 24,
                     ),
-                    const Text('Please confirm YES to dispatch this taxi'),
+                     Text(confirmDispatch == null?
+                        'Please confirm YES to dispatch this taxi': confirmDispatch!),
                     const SizedBox(
                       height: 48,
                     ),
-                    Text('${scannedVehicle!.vehicleReg}', style: myNumberStyleLargest(context),),
-
+                    Text(
+                      '${scannedVehicle!.vehicleReg}',
+                      style: myNumberStyleLargest(context),
+                    ),
                     const SizedBox(
                       height: 48,
                     ),
                     Row(
                       children: [
-                       PassengerCount(onCountPicked: (n ) {
-                         setState(() {
-                           passengerCount = n;
-                         });
-                         Navigator.of(context).pop();
-                         _sendTheDispatchRecord();
-
-                       },
+                        PassengerCount(
+                          onCountPicked: (n) {
+                            setState(() {
+                              passengerCount = n;
+                            });
+                            Navigator.of(context).pop();
+                            _sendTheDispatchRecord();
+                          },
                         ),
                         const SizedBox(
                           width: 24,
@@ -255,9 +288,12 @@ class ScanDispatchState extends State<ScanDispatch>
                           '$passengerCount',
                           style: myNumberStyleLargest(context),
                         ),
-
                       ],
                     ),
+                    const SizedBox(
+                      height: 28,
+                    ),
+                    showMediaRequestMessage? const MediaReminder() : const SizedBox(),
                     const SizedBox(
                       height: 12,
                     ),
@@ -270,16 +306,26 @@ class ScanDispatchState extends State<ScanDispatch>
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('No')),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    setState(() {
-                      _showRoutes = false;
-                    });
-                    _sendTheDispatchRecord();
-                  },
-                  child: const Text('Yes')),
+                  child:  Text(no == null?
+                      'No': no!)),
+
+              const SizedBox(width: 48,),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      setState(() {
+                        _showRoutes = false;
+                      });
+                      _sendTheDispatchRecord();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(yes == null?
+                          'Yes': yes!),
+                    )),
+              ),
             ],
           );
         });
@@ -303,47 +349,65 @@ class ScanDispatchState extends State<ScanDispatch>
 
   void handleScannedCar(lib.Vehicle car) async {
     pp('$mm scanned car received: ${car.vehicleReg}');
+
+    showMediaRequestMessage =
+    _checkIfVehicleMediaRequested();
     setState(() {
       scannedVehicle = car;
+      showScannedVehicle = true;
     });
   }
 
+  bool showScannedVehicle = false;
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
-  String? dispatchText, selectRouteText, scannerWaiting, cancelText, allPhotosVideos;
+  String? dispatchText,
+      selectRouteText,
+      scannerWaiting,
+      cancelText, working, dispatchTaxi,
+      confirmDispatch,
+      no, yes, dispatchFailed,
+      allPhotosVideos;
   Future _setTexts() async {
-    final c =  await prefs.getColorAndLocale();
+    final c = await prefs.getColorAndLocale();
     final loc = c.locale;
     dispatchText = await translator.translate('dispatch', loc);
     selectRouteText = await translator.translate('pleaseSelectRoute', loc);
     scannerWaiting = await translator.translate('scannerWaiting', loc);
     cancelText = await translator.translate('cancel', loc);
+    working = await translator.translate('working', loc);
+    confirmDispatch = await translator.translate('confirmDispatch', loc);
+    no = await translator.translate('no', loc);
+    yes = await translator.translate('yes', loc);
+    dispatchTaxi = await translator.translate('dispatchTaxi', loc);
 
-
+    setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text(dispatchText == null?
-          'Dispatch': dispatchText!,
+        title: Text(
+          dispatchText == null ? 'Dispatch' : dispatchText!,
           style: myTextStyleLarge(context),
         ),
         bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(460),
+            preferredSize: const Size.fromHeight(520),
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Column(
                 children: [
                   selectedRoute == null
-                      ?  Text(selectRouteText == null?
-                      'Please select Route': selectRouteText!)
+                      ? Text(selectRouteText == null
+                          ? 'Please select Route'
+                          : selectRouteText!)
                       : TextButton(
                           onPressed: () {
                             setState(() {
@@ -354,10 +418,10 @@ class ScanDispatchState extends State<ScanDispatch>
                           child: Text(
                             '${selectedRoute!.name}',
                             style: myTextStyleMediumLargeWithColor(
-                                context, Theme.of(context).primaryColor, 16),
+                                context, Theme.of(context).primaryColorLight, 20),
                           )),
                   const SizedBox(
-                    height: 8,
+                    height: 32,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -367,24 +431,15 @@ class ScanDispatchState extends State<ScanDispatch>
                           : Text(
                               '${scannedVehicle!.vehicleReg}',
                               style: myTextStyleMediumLargeWithColor(context,
-                                  Theme.of(context).primaryColorLight, 28),
+                                  Theme.of(context).primaryColorLight, 36),
                             ),
                       const SizedBox(
                         width: 16,
                       ),
-                      // PassengerCount(onCountPicked: onCountPicked),
-                      // const SizedBox(
-                      //   width: 16,
-                      // ),
-                      // Text(
-                      //   '$passengerCount',
-                      //   style: myTextStyleMediumLargeWithColor(
-                      //       context, Theme.of(context).primaryColorLight, 20),
-                      // ),
                     ],
                   ),
                   const SizedBox(
-                    height: 12,
+                    height: 24,
                   ),
                   SizedBox(
                     width: 300,
@@ -397,8 +452,10 @@ class ScanDispatchState extends State<ScanDispatch>
                                 const SizedBox(
                                   height: 48,
                                 ),
-                                Text(scannerWaiting == null?
-                                  'Scanner waiting for Route selection': scannerWaiting!,
+                                Text(
+                                  scannerWaiting == null
+                                      ? 'Scanner waiting for Route selection'
+                                      : scannerWaiting!,
                                   style: myTextStyleSmallBold(context),
                                 ),
                               ],
@@ -410,40 +467,10 @@ class ScanDispatchState extends State<ScanDispatch>
                             onUserScanned: (user) {},
                             onError: () {
                               handleScanError();
-                            }, quitAfterScan: false,
+                            },
+                            quitAfterScan: false,
                           ),
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  scannedVehicle == null
-                      ? const SizedBox()
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                                style: const ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStatePropertyAll<Color>(
-                                            Colors.grey)),
-                                onPressed: () {
-                                  _clearFields();
-                                },
-                                child:  Text(cancelText == null?
-                                    'Cancel': cancelText!)),
-                            SizedBox(
-                                width: 240,
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      _doDispatch();
-                                    },
-                                    child:  Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text(dispatchText == null?
-                                          'Dispatch' : dispatchText!),
-                                    ))),
-                          ],
-                        ),
                   const SizedBox(
                     height: 28,
                   ),
@@ -454,23 +481,24 @@ class ScanDispatchState extends State<ScanDispatch>
       body: Stack(
         children: [
           busy
-              ? const Center(
+              ?  Center(
                   child: SizedBox(
                     width: 300,
                     height: 200,
                     child: Column(
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 48,
                         ),
-                        CircularProgressIndicator(
+                        const CircularProgressIndicator(
                           strokeWidth: 6,
                           backgroundColor: Colors.purple,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 16,
                         ),
-                        Text('Working ... hang on a few seconds ...'),
+                        Text(working == null?
+                            'Working ... hang on a few seconds ...': working!),
                       ],
                     ),
                   ),
@@ -488,6 +516,54 @@ class ScanDispatchState extends State<ScanDispatch>
                         return DispatchCarPlate(dispatchRecord: car);
                       })
                   : const SizedBox(),
+          showScannedVehicle
+              ? Positioned(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Card(
+                  shape: getRoundedBorder(radius: 16),
+                  elevation: 8,
+                  child: scannedVehicle == null
+                      ? const SizedBox()
+                      : Row(mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 160,
+                        width: 300,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              TextButton(
+
+                                  onPressed: () {
+                                    _clearFields();
+                                  },
+                                  child: Text(cancelText == null
+                                      ? 'Cancel'
+                                      : cancelText!)),
+                              SizedBox(
+                                  width: 240,
+                                  child: ElevatedButton(
+                                      onPressed: () {
+                                        _doDispatch();
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(dispatchText == null
+                                            ? 'Dispatch'
+                                            : dispatchText!),
+                                      ))),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ))
+              : const SizedBox(),
           _showRoutes
               ? Positioned(
                   child: Padding(
@@ -500,6 +576,9 @@ class ScanDispatchState extends State<ScanDispatch>
                   ),
                 ))
               : const SizedBox(),
+
+
+
           // _showDispatches
           //     ? Positioned(
           //         child: DispatchWidgetList(
@@ -514,7 +593,8 @@ class ScanDispatchState extends State<ScanDispatch>
 }
 
 class DispatchCarPlate extends StatelessWidget {
-  const DispatchCarPlate({Key? key, required this.dispatchRecord}) : super(key: key);
+  const DispatchCarPlate({Key? key, required this.dispatchRecord})
+      : super(key: key);
   final lib.DispatchRecord dispatchRecord;
 
   @override
@@ -538,10 +618,14 @@ class DispatchCarPlate extends StatelessWidget {
       height: 80,
       width: 80,
       child: bd.Badge(
-        badgeContent: Text('${dispatchRecord.passengers}', style: myTextStyleSmall(context),),
+        badgeContent: Text(
+          '${dispatchRecord.passengers}',
+          style: myTextStyleSmall(context),
+        ),
         position: bd.BadgePosition.topEnd(top: 2, end: -2),
         badgeStyle: bd.BadgeStyle(
-          badgeColor: color, elevation: 8,
+          badgeColor: color,
+          elevation: 8,
           padding: const EdgeInsets.all(6),
         ),
         child: Card(
@@ -550,11 +634,12 @@ class DispatchCarPlate extends StatelessWidget {
           child: Center(
             child: Column(
               children: [
-                const SizedBox(height: 48,),
+                const SizedBox(
+                  height: 48,
+                ),
                 Text(
                   '${dispatchRecord.vehicleReg}',
-                  style: myTextStyleMediumLarge(
-                      context,  16),
+                  style: myTextStyleMediumLarge(context, 16),
                 ),
                 Text(date, style: myTextStyleSmall(context)),
               ],

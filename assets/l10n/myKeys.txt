@@ -44,6 +44,7 @@
 	 hashMap['loading'] = 'loading';
 	 hashMap['addCity'] = 'addCity';
 	 hashMap['zh'] = 'zh';
+	 hashMap['dispatchTaxi'] = 'dispatchTaxi';
 	 hashMap['sendCreds'] = 'sendCreds';
 	 hashMap[''recordVideo'] = ''recordVideo';
 	 hashMap['routeLandmarks'] = 'routeLandmarks';
@@ -53,6 +54,7 @@
 	 hashMap['routeViewer'] = 'routeViewer';
 	 hashMap['zu'] = 'zu';
 	 hashMap['makeVideos'] = 'makeVideos';
+	 hashMap['requestMedia'] = 'requestMedia';
 	 hashMap['emailAuth'] = 'emailAuth';
 	 hashMap['associations'] = 'associations';
 	 hashMap['initializingResources'] = 'initializingResources';
@@ -102,6 +104,7 @@
 	 hashMap['dataLoader'] = 'dataLoader';
 	 hashMap['date'] = 'date';
 	 hashMap['de'] = 'de';
+	 hashMap['scanVehicle'] = 'scanVehicle';
 	 hashMap['dispatch'] = 'dispatch';
 	 hashMap['waitingToRecordVideo'] = 'waitingToRecordVideo';
 	 hashMap['taxiMarshal'] = 'taxiMarshal';
@@ -126,6 +129,7 @@
 	 hashMap['calculateRouteDistance'] = 'calculateRouteDistance';
 	 hashMap['es'] = 'es';
 	 hashMap['registerAssoc'] = 'registerAssoc';
+	 hashMap['vehicleDispatched'] = 'vehicleDispatched';
 	 hashMap['selectRoute'] = 'selectRoute';
 	 hashMap['phoneNumber'] = 'phoneNumber';
 	 hashMap['emailAuthFailed'] = 'emailAuthFailed';
@@ -144,15 +148,18 @@
 	 hashMap['sendCode'] = 'sendCode';
 	 hashMap['vehicles'] = 'vehicles';
 	 hashMap['landmarks'] = 'landmarks';
+	 hashMap['confirmDispatch'] = 'confirmDispatch';
 	 hashMap['fr'] = 'fr';
 	 hashMap['dispatchError'] = 'dispatchError';
 	 hashMap['taxiNotOnRoute'] = 'taxiNotOnRoute';
 	 hashMap['duration'] = 'duration';
 	 hashMap['enterRouteName'] = 'enterRouteName';
+	 hashMap['numberDispatches'] = 'numberDispatches';
 	 hashMap['working'] = 'working';
 	 hashMap['takePicture'] = 'takePicture';
 	 hashMap['owner'] = 'owner';
 	 hashMap['ownerDash'] = 'ownerDash';
+	 hashMap['photosAndVideosNow'] = 'photosAndVideosNow';
 	 hashMap['scanTheVehicle'] = 'scanTheVehicle';
 	 hashMap['yes'] = 'yes';
 	 hashMap['vehicleMedia'] = 'vehicleMedia';
@@ -168,3 +175,4 @@
 	 hashMap['createNewRoute'] = 'createNewRoute';
 	 hashMap['emailSignIn'] = 'emailSignIn';
 	 hashMap['signInWithPhone'] = 'signInWithPhone';
+	 hashMap['dispatchFailed'] = 'dispatchFailed';

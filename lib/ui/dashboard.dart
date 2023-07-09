@@ -355,7 +355,7 @@ class DashboardState extends ConsumerState<Dashboard>
                             ),
                             Text(
                               user == null
-                                  ? 'Association Name}'
+                                  ? 'Association Name'
                                   : user!.associationName!,
                               style: myTextStyleMediumLargeWithColor(
                                   context, Theme.of(context).primaryColor, 18),
@@ -387,10 +387,10 @@ class DashboardState extends ConsumerState<Dashboard>
                             ),
                             SizedBox(
                                 width: 300,
-                                child: ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor: MaterialStatePropertyAll(Theme.of(context).unselectedWidgetColor)
-                                    ),
+                                child: TextButton(
+                                    // style: ButtonStyle(
+                                    //   backgroundColor: MaterialStatePropertyAll(Theme.of(context).unselectedWidgetColor)
+                                    // ),
                                     onPressed: () {
                                       _navigateToManualDispatch();
                                     },
