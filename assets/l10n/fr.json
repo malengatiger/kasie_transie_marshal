@@ -28,6 +28,7 @@
     "scannerWaiting": "Scanner en attente de sélection d\u0027itinéraire",
     "searchVehicles": "Rechercher des véhicules",
     "saveLandmark": "Sauvegarder",
+    "pleaseTakePhotosVideos": "Veuillez prendre des photos ou des vidéos de ce véhicule lorsque vous avez terminé l\u0027expédition. Merci!",
     "welcome": "Accueillir",
     "dashboard": "Tableau de bord",
     "ig": "Lingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Créer un nouvel itinéraire",
     "emailSignIn": "Se connecter par e-mail",
     "signInWithPhone": "Connectez-vous avec votre téléphone",
+    "loadingRoutes": "Chargement des informations d\u0027itinéraire de taxi",
     "dispatchFailed": "Le véhicule envoyé est tombé en panne. Veuillez réessayer"
   }
 }

@@ -28,6 +28,7 @@
     "scannerWaiting": "Scanner yi rindzele ku hlawuriwa ka Ndlela",
     "searchVehicles": "Ku Lavisisa Mimovha",
     "saveLandmark": "Hlayisa Xikombiso xa Misava",
+    "pleaseTakePhotosVideos": "Hi kombela mi teka swifaniso kumbe tivhidiyo ta movha lowu loko mi hetile ku rhumela. Inkomu!",
     "welcome": "Amukela",
     "dashboard": "Dashboard",
     "ig": "Lingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Endla ndlela leyintshwa",
     "emailSignIn": "Nghena hi Imeyili",
     "signInWithPhone": "Nghena hi riqingho ra wena",
+    "loadingRoutes": "Ku layicha vuxokoxoko bya Ndlela ya Mathekisi",
     "dispatchFailed": "Movha lowu rhumeriweke wu tsandzekile. Hi kombela u ringeta nakambe"
   }
 }

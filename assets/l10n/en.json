@@ -28,6 +28,7 @@
     "scannerWaiting": "Scanner waiting for Route selection",
     "searchVehicles": "Search Vehicles",
     "saveLandmark": "Save Landmark",
+    "pleaseTakePhotosVideos": "Please take photographs or videos of this vehicle when you are done with the dispatch. Thank You!",
     "welcome": "Welcome",
     "dashboard": "Dashboard",
     "ig": "Lingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Create a new route",
     "emailSignIn": "Email Sign In",
     "signInWithPhone": "Sign in with your phone",
+    "loadingRoutes": "Loading Taxi Route information",
     "dispatchFailed": "Vehicle dispatched has failed. Please try again"
   }
 }

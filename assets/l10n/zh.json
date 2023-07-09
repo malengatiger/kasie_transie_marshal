@@ -28,6 +28,7 @@
     "scannerWaiting": "扫描仪等待路线选择",
     "searchVehicles": "搜索车辆",
     "saveLandmark": "保存地标",
+    "pleaseTakePhotosVideos": "完成调度后，请拍摄该车辆的照片或视频。谢谢你！",
     "welcome": "欢迎",
     "dashboard": "仪表板",
     "ig": "林加拉语",
@@ -177,6 +178,7 @@
     "createNewRoute": "创建新路线",
     "emailSignIn": "电子邮件登录",
     "signInWithPhone": "使用您的手机登录",
+    "loadingRoutes": "加载出租车路线信息",
     "dispatchFailed": "车辆派出失败。请再试一次"
   }
 }

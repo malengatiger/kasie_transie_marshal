@@ -17,6 +17,7 @@ import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_library/widgets/language_and_color_chooser.dart';
 import 'package:kasie_transie_marshal/auth/phone_auth_signin.dart';
 import 'package:kasie_transie_library/bloc/dispatch_helper.dart';
+import 'package:kasie_transie_marshal/ui/dispatch_via_scan.dart';
 import 'package:kasie_transie_marshal/ui/scan_dispatch.dart';
 import 'package:kasie_transie_marshal/ui/scan_vehicle_for_media.dart';
 
@@ -42,10 +43,9 @@ class DashboardState extends ConsumerState<Dashboard>
   bool authed = false;
 
   lib.VehicleMediaRequest? vehicleMediaRequest;
-  late StreamSubscription<lib.DispatchRecord> _streamSubscription;
+  late StreamSubscription<lib.DispatchRecord> _dispatchStreamSubscription;
   late StreamSubscription<lib.VehicleMediaRequest> _mediaRequestSubscription;
   late StreamSubscription<lib.RouteUpdateRequest> _routeUpdateSubscription;
-
 
   @override
   void initState() {
@@ -56,26 +56,25 @@ class DashboardState extends ConsumerState<Dashboard>
   }
 
   void _listen() async {
-    _streamSubscription = dispatchHelper.dispatchStream.listen((event) {
+    _dispatchStreamSubscription = dispatchHelper.dispatchStream.listen((event) {
       pp('$mm dispatchHelper.dispatchStream delivered ${event.vehicleReg}');
       dispatchRecords.insert(0, event);
       if (mounted) {
-        setState(() {
-
-        });
+        setState(() {});
       }
     });
     //
-    _mediaRequestSubscription = fcmBloc.vehicleMediaRequestStream.listen((event) {
+    _mediaRequestSubscription =
+        fcmBloc.vehicleMediaRequestStream.listen((event) {
       pp('$mm fcmBloc.vehicleMediaRequestStream delivered ${event.vehicleReg}');
-        if (mounted) {
-          _confirmNavigationToPhotos(event);
-        }
+      if (mounted) {
+        _confirmNavigationToPhotos(event);
+      }
     });
     //
     _routeUpdateSubscription = fcmBloc.routeUpdateRequestStream.listen((event) {
       pp('$mm fcmBloc.routeUpdateRequestStream delivered: ${event.routeName}');
-        _startRouteUpdate(event);
+      _startRouteUpdate(event);
     });
   }
 
@@ -84,46 +83,60 @@ class DashboardState extends ConsumerState<Dashboard>
 
     showDialog(
         barrierDismissible: false,
-        context: context, builder: (ctx){
-      return AlertDialog(
-        content: Column(
-          children: [
-            const Text('You have been requested to take pictures and or video of the vehicle.\n'
-                'Please tap YES to start the photos or do that at the earliest opportunity.'),
-            const SizedBox(height: 48,),
-            Row(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            content: Column(
               children: [
-                const Text('Vehicle: '),
-                Text('${request.vehicleReg}', style: myTextStyleMediumLargeWithColor(context,
-                    Theme.of(context).primaryColor, 32),)
+                const Text(
+                    'You have been requested to take pictures and or video of the vehicle.\n'
+                    'Please tap YES to start the photos or do that at the earliest opportunity.'),
+                const SizedBox(
+                  height: 48,
+                ),
+                Row(
+                  children: [
+                    const Text('Vehicle: '),
+                    Text(
+                      '${request.vehicleReg}',
+                      style: myTextStyleMediumLargeWithColor(
+                          context, Theme.of(context).primaryColor, 32),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 48,
+                ),
               ],
             ),
-            const SizedBox(height: 48,),
-          ],
-        ),
-        actions: [
-          TextButton(onPressed: (){
-            Navigator.of(context).pop();
-          }, child: const Text('Cancel')),
-
-          ElevatedButton(onPressed: (){
-            _navigateToScanVehicleForMedia();
-          }, child:const Text( "Start the Camera")),
-        ],
-      );
-    });
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel')),
+              ElevatedButton(
+                  onPressed: () {
+                    _navigateToScanVehicleForMedia();
+                  },
+                  child: const Text("Start the Camera")),
+            ],
+          );
+        });
   }
 
   void _startRouteUpdate(lib.RouteUpdateRequest request) async {
     pp('$mm start route update in isolate for ${request.routeName} ...  ');
-    routesIsolate.getRoute(user!.associationId!, request.routeId! );
+    routesIsolate.getRoute(user!.associationId!, request.routeId!);
 
     if (mounted) {
       showSnackBar(
           duration: const Duration(seconds: 10),
-          message: 'Route ${request.routeName} has been refreshed! Thanks', context: context);
+          message: 'Route ${request.routeName} has been refreshed! Thanks',
+          context: context);
     }
   }
+
   void _getAuthenticationStatus() async {
     pp('\n\n$mm _getAuthenticationStatus ....... '
         'check both Firebase user and Kasie user');
@@ -134,8 +147,8 @@ class DashboardState extends ConsumerState<Dashboard>
       pp('$mm _getAuthenticationStatus .......  '
           '🥬🥬🥬auth is DEFINITELY authenticated and OK');
       user = await prefs.getUser();
-      myPrettyJsonPrint(user!.toJson());
       authed = true;
+      fcmBloc.subscribeToTopics('MarshallApp');
       setState(() {});
       _getData();
     } else {
@@ -151,12 +164,16 @@ class DashboardState extends ConsumerState<Dashboard>
 
     setState(() {});
   }
+
   var requests = <lib.VehicleMediaRequest>[];
 
   Future _getAssociationVehicleMediaRequests(bool refresh) async {
-    final startDate = DateTime.now().toUtc().subtract(const Duration(days: 30)).toIso8601String();
-    requests = await listApiDog.getAssociationVehicleMediaRequests(user!.associationId!,
-        startDate, refresh);
+    final startDate = DateTime.now()
+        .toUtc()
+        .subtract(const Duration(days: 30))
+        .toIso8601String();
+    requests = await listApiDog.getAssociationVehicleMediaRequests(
+        user!.associationId!, startDate, refresh);
   }
 
   Future<void> _navigateToAuth() async {
@@ -171,7 +188,6 @@ class DashboardState extends ConsumerState<Dashboard>
   }
 
   void _navigateToScanVehicleForMedia() {
-
     pp('$mm navigate to ScanVehicleForMedia ...  ');
     navigateWithScale(const ScanVehicleForMedia(), context);
   }
@@ -184,7 +200,7 @@ class DashboardState extends ConsumerState<Dashboard>
     });
     try {
       colorAndLocale = await prefs.getColorAndLocale();
-     // _setTexts();
+      // _setTexts();
 
       if (user != null) {
         await _getRoutes();
@@ -198,8 +214,9 @@ class DashboardState extends ConsumerState<Dashboard>
       pp(e);
       if (mounted) {
         showSnackBar(
-                  padding: 16, message: 'Error getting data', context: context);
-      };
+            padding: 16, message: 'Error getting data', context: context);
+      }
+      ;
     }
     //
     setState(() {
@@ -230,9 +247,7 @@ class DashboardState extends ConsumerState<Dashboard>
         await translator.translate('dispatches', colorAndLocale.locale);
 
     marshalText = await translator.translate('marshal', colorAndLocale.locale);
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   Future _getRoutes() async {
@@ -242,27 +257,23 @@ class DashboardState extends ConsumerState<Dashboard>
         .getRoutes(AssociationParameter(user!.associationId!, false));
     pp('$mm ... marshal dashboard; routes: ${routes.length} ...');
     setState(() {});
-
   }
 
   Future _getCars() async {
     pp('$mm ... marshal dashboard; getting cars: ${cars.length} ...');
 
-    cars = await listApiDog
-        .getAssociationVehicles(user!.associationId!, false);
+    cars = await listApiDog.getAssociationVehicles(user!.associationId!, false);
     pp('$mm ... marshal dashboard; cars: ${cars.length} ...');
     setState(() {});
-
   }
 
   Future _getDispatches() async {
     pp('$mm ... marshal dashboard; getting dispatches: ${dispatchRecords.length} ...');
 
-    dispatchRecords = await listApiDog
-        .getMarshalDispatchRecords(user!.userId!, false);
+    dispatchRecords =
+        await listApiDog.getMarshalDispatchRecords(user!.userId!, false);
     pp('$mm ... marshal dashboard; dispatchRecords: ${dispatchRecords.length} ...');
     setState(() {});
-
   }
 
   Future _getLandmarks() async {
@@ -275,7 +286,7 @@ class DashboardState extends ConsumerState<Dashboard>
   @override
   void dispose() {
     _controller.dispose();
-    _streamSubscription.cancel();
+    _dispatchStreamSubscription.cancel();
     _routeUpdateSubscription.cancel();
     _mediaRequestSubscription.cancel();
     super.dispose();
@@ -284,7 +295,7 @@ class DashboardState extends ConsumerState<Dashboard>
   void _navigateToScanDispatch() async {
     pp('$mm _navigateToScanDispatch ......');
 
-    navigateWithScale(const ScanDispatch(), context);
+    navigateWithScale(const DispatchViaScan(), context);
   }
 
   void _navigateToManualDispatch() async {}
@@ -335,121 +346,128 @@ class DashboardState extends ConsumerState<Dashboard>
             ),
             body: Stack(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: busy
-                      ? const Center(
-                          child: SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 6,
-                              backgroundColor: Colors.white,
-                            ),
+                busy
+                    ? const Center(
+                        child: SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 6,
+                            backgroundColor: Colors.white,
                           ),
-                        )
-                      : Column(
-                          children: [
-                            const SizedBox(
-                              height: 64,
-                            ),
-                            Text(
-                              user == null
-                                  ? 'Association Name'
-                                  : user!.associationName!,
-                              style: myTextStyleMediumLargeWithColor(
-                                  context, Theme.of(context).primaryColor, 18),
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              user == null ? 'Marshal Name' : user!.name,
-                              style: myTextStyleSmall(context),
-                            ),
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            SizedBox(
-                                width: 300,
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      _navigateToScanDispatch();
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text(dispatchWithScan == null
-                                          ? 'Dispatch with Scan'
-                                          : dispatchWithScan!),
-                                    ))),
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            SizedBox(
-                                width: 300,
-                                child: TextButton(
-                                    // style: ButtonStyle(
-                                    //   backgroundColor: MaterialStatePropertyAll(Theme.of(context).unselectedWidgetColor)
-                                    // ),
-                                    onPressed: () {
-                                      _navigateToManualDispatch();
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text(manualDispatch == null
-                                          ? 'Manual Dispatch'
-                                          : manualDispatch!),
-                                    ))),
-                            const SizedBox(
-                              height: 48,
-                            ),
-                            Expanded(
-                              child: GridView(
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisSpacing: 2,
-                                  mainAxisSpacing: 2,
-                                  crossAxisCount: 2,
-                                ),
-                                children: [
-                                  TotalWidget(
-                                      caption: vehiclesText == null
-                                          ? 'Vehicles'
-                                          : vehiclesText!,
-                                      number: cars.length,
-                                      color: Colors.grey.shade600,
-                                      fontSize: 32,
-                                      onTapped: () {}),
-                                  TotalWidget(
-                                      caption: routesText == null
-                                          ? 'Routes'
-                                          : routesText!,
-                                      number: routes.length,
-                                      color: Colors.grey.shade600,
-                                      fontSize: 32,
-                                      onTapped: () {}),
-                                  TotalWidget(
-                                      caption: landmarksText == null
-                                          ? 'Landmarks'
-                                          : landmarksText!,
-                                      number: routeLandmarks.length,
-                                      color: Colors.grey.shade600,
-                                      fontSize: 32,
-                                      onTapped: () {}),
-                                  TotalWidget(
-                                      caption: dispatchesText == null
-                                          ? 'Dispatches'
-                                          : dispatchesText!,
-                                      number: dispatchRecords.length,
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 40,
-                                      onTapped: () {}),
-                                ],
-                              ),
-                            ),
-                          ],
                         ),
-                ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          shape: getRoundedBorder(radius: 16),
+                          elevation: 4,
+                          child: Column(
+                            children: [
+                              const SizedBox(
+                                height: 32,
+                              ),
+                              Text(
+                                user == null
+                                    ? 'Association Name'
+                                    : user!.associationName!,
+                                style: myTextStyleMediumLargeWithColor(context,
+                                    Theme.of(context).primaryColor, 18),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                user == null ? 'Marshal Name' : user!.name,
+                                style: myTextStyleSmall(context),
+                              ),
+                              const SizedBox(
+                                height: 24,
+                              ),
+                              SizedBox(
+                                  width: 300,
+                                  child: ElevatedButton(
+                                      onPressed: () {
+                                        _navigateToScanDispatch();
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(dispatchWithScan == null
+                                            ? 'Dispatch with Scan'
+                                            : dispatchWithScan!),
+                                      ))),
+                              const SizedBox(
+                                height: 24,
+                              ),
+                              SizedBox(
+                                  width: 300,
+                                  child: TextButton(
+                                      // style: ButtonStyle(
+                                      //   backgroundColor: MaterialStatePropertyAll(Theme.of(context).unselectedWidgetColor)
+                                      // ),
+                                      onPressed: () {
+                                        _navigateToManualDispatch();
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(manualDispatch == null
+                                            ? 'Manual Dispatch'
+                                            : manualDispatch!),
+                                      ))),
+                              const SizedBox(
+                                height: 24,
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: GridView(
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisSpacing: 2,
+                                      mainAxisSpacing: 2,
+                                      crossAxisCount: 2,
+                                    ),
+                                    children: [
+                                      TotalWidget(
+                                          caption: vehiclesText == null
+                                              ? 'Vehicles'
+                                              : vehiclesText!,
+                                          number: cars.length,
+                                          color: Colors.grey.shade600,
+                                          fontSize: 32,
+                                          onTapped: () {}),
+                                      TotalWidget(
+                                          caption: routesText == null
+                                              ? 'Routes'
+                                              : routesText!,
+                                          number: routes.length,
+                                          color: Colors.grey.shade600,
+                                          fontSize: 32,
+                                          onTapped: () {}),
+                                      TotalWidget(
+                                          caption: landmarksText == null
+                                              ? 'Landmarks'
+                                              : landmarksText!,
+                                          number: routeLandmarks.length,
+                                          color: Colors.grey.shade600,
+                                          fontSize: 32,
+                                          onTapped: () {}),
+                                      TotalWidget(
+                                          caption: dispatchesText == null
+                                              ? 'Dispatches'
+                                              : dispatchesText!,
+                                          number: dispatchRecords.length,
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize: 40,
+                                          onTapped: () {}),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                 user == null
                     ? Positioned(
                         left: 12,
@@ -469,7 +487,10 @@ class DashboardState extends ConsumerState<Dashboard>
                                     const SizedBox(
                                       height: 64,
                                     ),
-                                    Text('Welcome!', style: myTextStyleLarge(context),),
+                                    Text(
+                                      'Welcome!',
+                                      style: myTextStyleLarge(context),
+                                    ),
                                     const SizedBox(
                                       height: 32,
                                     ),
@@ -514,7 +535,7 @@ class TotalWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 140,
+      height: 120,
       width: 120,
       child: GestureDetector(
         onTap: () {
@@ -525,23 +546,8 @@ class TotalWidget extends StatelessWidget {
           elevation: 8,
           child: Center(
             child: SizedBox(
-              height: 100,
-              child: Column(
-                children: [
-                  Text(
-                    '$number',
-                    style:
-                        myNumberStyleLargerWithColor(color, fontSize, context),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Text(
-                    caption,
-                    style: myTextStyleSmall(context),
-                  ),
-                ],
-              ),
+              height: 80,
+              child: NumberAndCaption(caption: caption, number: number, color: color, fontSize: fontSize),
             ),
           ),
         ),
@@ -549,3 +555,32 @@ class TotalWidget extends StatelessWidget {
     );
   }
 }
+class NumberAndCaption extends StatelessWidget {
+  const NumberAndCaption({Key? key, required this.caption, required this.number, required this.color, required this.fontSize}) : super(key: key);
+  final String caption;
+  final int number;
+  final Color color;
+  final double fontSize;
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(height: 64,
+      child: Column(
+        children: [
+          Text(
+            '$number',
+            style:
+            myNumberStyleLargerWithColor(color, fontSize, context),
+          ),
+          const SizedBox(
+            height: 4,
+          ),
+          Text(
+            caption,
+            style: myTextStyleSmall(context),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

@@ -28,6 +28,7 @@
     "scannerWaiting": "Kichanganuzi kinasubiri uteuzi wa Njia",
     "searchVehicles": "Tafuta Magari",
     "saveLandmark": "Hifadhi Alama",
+    "pleaseTakePhotosVideos": "Tafadhali piga picha au video za gari hili unapomaliza kutuma. Asante!",
     "welcome": "Karibu",
     "dashboard": "Dashibodi",
     "ig": "Kilingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Unda njia mpya",
     "emailSignIn": "Ingia kwa Barua Pepe",
     "signInWithPhone": "Ingia kwa kutumia simu yako",
+    "loadingRoutes": "Inapakia maelezo ya Njia ya Teksi",
     "dispatchFailed": "Gari iliyotumwa imeshindwa. Tafadhali jaribu tena"
   }
 }

@@ -28,6 +28,7 @@
     "scannerWaiting": "Ihe nyocha na-eche nhọrọ ụzọ ụzọ",
     "searchVehicles": "Chọọ ụgbọ ala",
     "saveLandmark": "Chekwaa akara ala",
+    "pleaseTakePhotosVideos": "Biko were foto ma ọ bụ vidiyo nke ụgbọ ala a mgbe emechara ya. Daalụ!",
     "welcome": "Nnọọ",
     "dashboard": "Dashboard",
     "ig": "Lingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Mepụta ụzọ ọhụrụ",
     "emailSignIn": "Nbanye email",
     "signInWithPhone": "Jiri ekwentị gị banye",
+    "loadingRoutes": "Na-ebu ozi okporo ụzọ tagzi",
     "dispatchFailed": "Ụgbọ ala ezigara adaala. Biko nwaa ọzọ"
   }
 }

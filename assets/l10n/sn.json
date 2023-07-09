@@ -28,6 +28,7 @@
     "scannerWaiting": "Scanner yakamirira kusarudzwa kweNzira",
     "searchVehicles": "Tsvaga Mota",
     "saveLandmark": "Sevha Landmark",
+    "pleaseTakePhotosVideos": "Ndokumbira utore mafoto kana mavhidhiyo emota iyi kana wapedza kutumira. Ndatenda!",
     "welcome": "Mauya",
     "dashboard": "Dashboard",
     "ig": "Lingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Gadzira nzira itsva",
     "emailSignIn": "Email Sign In",
     "signInWithPhone": "Pinda nefoni yako",
+    "loadingRoutes": "Loading Taxi Route information",
     "dispatchFailed": "Motokari yatumirwa yatadza kushanda. Ndapota edza zvakare"
   }
 }

@@ -28,6 +28,7 @@
     "scannerWaiting": "Scanner wartet auf Routenauswahl",
     "searchVehicles": "Fahrzeuge suchen",
     "saveLandmark": "Wahrzeichen speichern",
+    "pleaseTakePhotosVideos": "Bitte machen Sie Fotos oder Videos von diesem Fahrzeug, wenn Sie mit dem Versand fertig sind. Danke schön!",
     "welcome": "Willkommen",
     "dashboard": "Armaturenbrett",
     "ig": "Lingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Erstellen Sie eine neue Route",
     "emailSignIn": "E-Mail-Anmeldung",
     "signInWithPhone": "Melden Sie sich mit Ihrem Telefon an",
+    "loadingRoutes": "Informationen zur Taxiroute werden geladen",
     "dispatchFailed": "Das versandte Fahrzeug ist ausgefallen. Bitte versuche es erneut"
   }
 }

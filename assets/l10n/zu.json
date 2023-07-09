@@ -28,6 +28,7 @@
     "scannerWaiting": "Iskena silinde ukukhethwa koMzila",
     "searchVehicles": "Sesha Izimoto",
     "saveLandmark": "Londoloza Umaki Womhlaba",
+    "pleaseTakePhotosVideos": "Sicela uthathe izithombe noma amavidiyo ale moto uma usuqedile ukuyithumela. Ngiyabonga!",
     "welcome": "Siyakwamukela",
     "dashboard": "Ideshibhodi",
     "ig": "IsiLingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Dala umzila omusha",
     "emailSignIn": "Ngena ngemvume nge-imeyili",
     "signInWithPhone": "Ngena ngemvume ngefoni yakho",
+    "loadingRoutes": "Ilayisha ulwazi Lomzila Wamatekisi",
     "dispatchFailed": "Imoto ethunyelwe yehlulekile. Ngicela uzame futhi"
   }
 }

@@ -28,6 +28,7 @@
     "scannerWaiting": "Scanner aguardando seleção de rota",
     "searchVehicles": "Pesquisar veículos",
     "saveLandmark": "Salvar ponto de referência",
+    "pleaseTakePhotosVideos": "Por favor, tire fotos ou vídeos deste veículo quando terminar o despacho. Obrigado!",
     "welcome": "Bem-vindo",
     "dashboard": "Painel",
     "ig": "lingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Criar uma nova rota",
     "emailSignIn": "E-mail Entrar",
     "signInWithPhone": "Faça login com seu telefone",
+    "loadingRoutes": "Carregando informações de rota de táxi",
     "dispatchFailed": "O veículo despachado falhou. Por favor, tente novamente"
   }
 }

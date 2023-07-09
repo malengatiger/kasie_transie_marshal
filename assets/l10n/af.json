@@ -28,6 +28,7 @@
     "scannerWaiting": "Skandeerder wag vir roetekeuse",
     "searchVehicles": "Soek voertuie",
     "saveLandmark": "Stoor Landmerk",
+    "pleaseTakePhotosVideos": "Neem asseblief foto\u0027s of video\u0027s van hierdie voertuig wanneer jy klaar is met die versending. Dankie!",
     "welcome": "Welkom",
     "dashboard": "Dashboard",
     "ig": "Lingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Skep \u0027n nuwe roete",
     "emailSignIn": "E-pos Teken in",
     "signInWithPhone": "Meld aan met jou foon",
+    "loadingRoutes": "Laai Taxi-roete-inligting",
     "dispatchFailed": "Voertuig wat gestuur is, het misluk. Probeer asseblief weer"
   }
 }

@@ -26,6 +26,7 @@
 	 hashMap['scannerWaiting'] = 'scannerWaiting';
 	 hashMap['searchVehicles'] = 'searchVehicles';
 	 hashMap['saveLandmark'] = 'saveLandmark';
+	 hashMap['pleaseTakePhotosVideos'] = 'pleaseTakePhotosVideos';
 	 hashMap['welcome'] = 'welcome';
 	 hashMap['dashboard'] = 'dashboard';
 	 hashMap['ig'] = 'ig';
@@ -175,4 +176,5 @@
 	 hashMap['createNewRoute'] = 'createNewRoute';
 	 hashMap['emailSignIn'] = 'emailSignIn';
 	 hashMap['signInWithPhone'] = 'signInWithPhone';
+	 hashMap['loadingRoutes'] = 'loadingRoutes';
 	 hashMap['dispatchFailed'] = 'dispatchFailed';

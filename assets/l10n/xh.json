@@ -28,6 +28,7 @@
     "scannerWaiting": "Iskena silinde ukhetho lweNdlela",
     "searchVehicles": "Khangela iZithuthi",
     "saveLandmark": "Gcina iLandmark",
+    "pleaseTakePhotosVideos": "Nceda uthathe iifoto okanye iividiyo zesi sithuthi xa ugqibile ukuthunyelwa. Enkosi!",
     "welcome": "Wamkelekile",
     "dashboard": "Dashboard",
     "ig": "IsiLingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Yenza indlela entsha",
     "emailSignIn": "Ngena Ngeimeyile",
     "signInWithPhone": "Sayina ngefowuni yakho",
+    "loadingRoutes": "Ilayisha ulwazi lweNdlela yeTeksi",
     "dispatchFailed": "Imoto ethunyelweyo ayiphumelelanga. Nceda zama kwakhona"
   }
 }

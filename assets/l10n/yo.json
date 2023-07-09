@@ -28,6 +28,7 @@
     "scannerWaiting": "Scanner nduro fun Aṣayan ipa ọna",
     "searchVehicles": "Wa Awọn ọkọ ayọkẹlẹ",
     "saveLandmark": "Fi Ala-ilẹ pamọ",
+    "pleaseTakePhotosVideos": "Jọwọ ya awọn fọto tabi awọn fidio ti ọkọ yii nigbati o ba ti pari pẹlu fifiranṣẹ naa. E dupe!",
     "welcome": "Kaabo",
     "dashboard": "Dasibodu",
     "ig": "Lingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Ṣẹda ọna tuntun kan",
     "emailSignIn": "Imeeli Wọle",
     "signInWithPhone": "Wọle pẹlu foonu rẹ",
+    "loadingRoutes": "Ikojọpọ Taxi Route alaye",
     "dispatchFailed": "Ọkọ ti a firanṣẹ ti kuna. Jọwọ gbiyanju lẹẹkansi"
   }
 }

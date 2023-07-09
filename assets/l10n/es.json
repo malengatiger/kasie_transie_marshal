@@ -28,6 +28,7 @@
     "scannerWaiting": "Escáner en espera de selección de ruta",
     "searchVehicles": "Buscar vehículos",
     "saveLandmark": "Guardar punto de referencia",
+    "pleaseTakePhotosVideos": "Tome fotografías o videos de este vehículo cuando haya terminado con el envío. ¡Gracias!",
     "welcome": "Bienvenido",
     "dashboard": "Panel",
     "ig": "Lingala",
@@ -177,6 +178,7 @@
     "createNewRoute": "Crear una nueva ruta",
     "emailSignIn": "Correo electrónico Iniciar sesión",
     "signInWithPhone": "Inicia sesión con tu teléfono",
+    "loadingRoutes": "Cargando información de ruta de taxi",
     "dispatchFailed": "El vehículo enviado ha fallado. Inténtalo de nuevo"
   }
 }
