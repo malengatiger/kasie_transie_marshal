@@ -101,12 +101,21 @@ class DispatchViaScanState extends State<DispatchViaScan>
         radiusInMetres: 500.0);
 
     //check ... selected ...
-
+    final prevRoute = await prefs.getRoute();
     bool found = false;
     if (selectedRoute != null) {
       for (var value in routes) {
         if (value.routeId == selectedRoute!.routeId) {
           found = true;
+          break;
+        }
+      }
+    }
+    if (prevRoute != null) {
+      for (var value in routes) {
+        if (value.routeId == prevRoute.routeId) {
+          found = true;
+          selectedRoute = value;
           break;
         }
       }
@@ -216,7 +225,7 @@ class DispatchViaScanState extends State<DispatchViaScan>
                               passengerCount = n;
                             });
                             Navigator.of(context).pop();
-                            _sendTheDispatchRecord();
+                            _confirmPassengerCount();
                           },
                         ),
                         const SizedBox(
@@ -281,10 +290,10 @@ class DispatchViaScanState extends State<DispatchViaScan>
   int passengerCount = 0;
   Future<void> _sendTheDispatchRecord() async {
     late lib.DispatchRecord m;
-    // try {
-      // setState(() {
-      //   busy = true;
-      // });
+    try {
+      setState(() {
+        busy = true;
+      });
       final loc = await locationBloc.getLocation();
       lib.RouteLandmark? mark = await findNearestLandmark(loc);
       m = lib.DispatchRecord(ObjectId(),
@@ -316,20 +325,18 @@ class DispatchViaScanState extends State<DispatchViaScan>
       _clearFields();
       final result = await dispatchIsolate.addDispatchRecord(m);
       pp('$mm ... _doDispatch added?????????????:  ${result.vehicleReg}');
-      // myPrettyJsonPrint(result.toJson());
-    // } catch (e) {
-    //   pp(e);
-    //   //await cacheManager.saveDispatchRecord(m);
-    //   if (mounted) {
-    //     showSnackBar(
-    //         padding: 16,
-    //         message: 'Error dispatching taxi: $e',
-    //         context: context);
-    //   }
-    // }
-    // setState(() {
-    //   busy = false;
-    // });
+    } catch (e) {
+      pp(e);
+      if (mounted) {
+        showSnackBar(
+            padding: 16,
+            message: 'Error dispatching taxi: $e',
+            context: context);
+      }
+    }
+    setState(() {
+      busy = false;
+    });
   }
 
   bool showMediaRequestMessage = true;
@@ -382,6 +389,7 @@ class DispatchViaScanState extends State<DispatchViaScan>
                             onPressed: () {
                               setState(() {
                                 _showRoutes = !_showRoutes;
+                                _showDispatches = false;
                               });
                             },
                             child: Padding(
@@ -389,7 +397,7 @@ class DispatchViaScanState extends State<DispatchViaScan>
                               child: Text(
                                 '${selectedRoute!.name}',
                                 style: myTextStyleMediumLargeWithColor(context,
-                                    Theme.of(context).primaryColorLight, 18),
+                                    Theme.of(context).primaryColorLight, 16),
                               ),
                             )),
                     const SizedBox(
@@ -403,14 +411,19 @@ class DispatchViaScanState extends State<DispatchViaScan>
                                 context, Theme.of(context).primaryColor, 32),
                           ),
                     busy
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 4,
-                              backgroundColor: Colors.pink,
-                            ),
-                          )
+                        ? const Row(mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                                height: 16,
+                                width: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  backgroundColor: Colors.pink,
+                                ),
+                              ),
+                            SizedBox(width: 24,),
+                          ],
+                        )
                         : const SizedBox(),
                     selectedRoute == null
                         ? const SizedBox()
@@ -507,18 +520,18 @@ class DispatchViaScanState extends State<DispatchViaScan>
                     ),
                   )
                 : const SizedBox(),
-            busy
-                ? const Center(
-                    child: SizedBox(
-                      height: 32,
-                      width: 32,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 6,
-                        backgroundColor: Colors.green,
-                      ),
-                    ),
-                  )
-                : const SizedBox(),
+            // busy
+            //     ? const Center(
+            //         child: SizedBox(
+            //           height: 32,
+            //           width: 32,
+            //           child: CircularProgressIndicator(
+            //             strokeWidth: 6,
+            //             backgroundColor: Colors.green,
+            //           ),
+            //         ),
+            //       )
+            //     : const SizedBox(),
           ],
         ),
       ),

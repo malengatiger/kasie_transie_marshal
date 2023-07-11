@@ -213,16 +213,10 @@ V
 &macos/Runner/DebugProfile.entitlements,5/b/5b1dc31e744c96e20d86d4e01688a17d45a81443
 M
 lib/intro/intro_page_one.dart,4/6/464c2440c935f8ad7fe225cee4b37dbc68b30b09
-I
-lib/generated/assets.dart,5/b/5b815209f3ac1d4b94a4211dbfb903428d4ed1c2
-J
-lib/intro/splash_page.dart,5/1/519c5669eb9f9000279cb6abe40f1287040a0798
 @
 ios/Podfile.lock,6/f/6fc5efc9eba1a38c53e9a557a6ebda2b662185e1
 <
 pubspec.yaml,e/8/e8e045469170189f1d6ef12576bd01af132b1018
-Q
-!.idea/libraries/Dart_Packages.xml,f/c/fc67c2d2441e33af1dbd1e910281523d1ce74b4a
 ^
 .android/app/src/main/res/drawable/app_icon.xml,4/1/41be73f05525cc44d6c6cf9f8c491ad0a1dae296
 O

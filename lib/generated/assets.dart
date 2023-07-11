@@ -2,18 +2,34 @@
 class Assets {
   Assets._();
 
+  static const String assetsAf = 'assets/af.json';
   static const String assetsAnalysisOptions = 'assets/analysis_options.png';
   static const String assetsAvatar = 'assets/avatar.png';
   static const String assetsBatman = 'assets/batman.png';
   static const String assetsBeep1 = 'assets/beep1.mp3';
   static const String assetsBeep2 = 'assets/beep2.wav';
+  static const String assetsDe = 'assets/de.json';
+  static const String assetsEn = 'assets/en.json';
+  static const String assetsEs = 'assets/es.json';
   static const String assetsFilesPeople = 'assets/files/people.json';
+  static const String assetsFr = 'assets/fr.json';
   static const String assetsGio = 'assets/gio.png';
+  static const String assetsIg = 'assets/ig.json';
   static const String assetsIntlEn = 'assets/intl_en.arb';
+  static const String assetsMyKeys = 'assets/myKeys.txt';
+  static const String assetsPt = 'assets/pt.json';
+  static const String assetsSn = 'assets/sn.json';
+  static const String assetsSt = 'assets/st.json';
+  static const String assetsSw = 'assets/sw.json';
+  static const String assetsTs = 'assets/ts.json';
   static const String assetsVideo = 'assets/video.png';
   static const String assetsVideo2 = 'assets/video2.jpg';
   static const String assetsVideo3 = 'assets/video3.png';
   static const String assetsXd1 = 'assets/xd1.jpg';
+  static const String assetsXh = 'assets/xh.json';
+  static const String assetsYo = 'assets/yo.json';
+  static const String assetsZh = 'assets/zh.json';
+  static const String assetsZu = 'assets/zu.json';
   static const String filesPeople = 'assets/files/people.csv';
   static const String introImg1 = 'assets/intro/img1.jpeg';
   static const String introImg2 = 'assets/intro/img2.jpeg';

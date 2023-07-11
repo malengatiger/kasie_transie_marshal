@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:kasie_transie_library/bloc/data_api_dog.dart';
 import 'package:kasie_transie_library/bloc/list_api_dog.dart';
 import 'package:kasie_transie_library/data/color_and_locale.dart';
@@ -14,6 +15,7 @@ import 'package:kasie_transie_library/providers/kasie_providers.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/utils/navigator_utils.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
+import 'package:kasie_transie_library/widgets/days_drop_down.dart';
 import 'package:kasie_transie_library/widgets/language_and_color_chooser.dart';
 import 'package:kasie_transie_marshal/auth/phone_auth_signin.dart';
 import 'package:kasie_transie_library/bloc/dispatch_helper.dart';
@@ -41,7 +43,7 @@ class DashboardState extends ConsumerState<Dashboard>
   bool busy = false;
   late ColorAndLocale colorAndLocale;
   bool authed = false;
-
+  var totalPassengers = 0;
   lib.VehicleMediaRequest? vehicleMediaRequest;
   late StreamSubscription<lib.DispatchRecord> _dispatchStreamSubscription;
   late StreamSubscription<lib.VehicleMediaRequest> _mediaRequestSubscription;
@@ -59,6 +61,7 @@ class DashboardState extends ConsumerState<Dashboard>
     _dispatchStreamSubscription = dispatchHelper.dispatchStream.listen((event) {
       pp('$mm dispatchHelper.dispatchStream delivered ${event.vehicleReg}');
       dispatchRecords.insert(0, event);
+      _aggregatePassengers();
       if (mounted) {
         setState(() {});
       }
@@ -78,6 +81,12 @@ class DashboardState extends ConsumerState<Dashboard>
     });
   }
 
+  void _aggregatePassengers() {
+    totalPassengers = 0;
+    for (var value in dispatchRecords) {
+      totalPassengers += value.passengers!;
+    }
+  }
   void _confirmNavigationToPhotos(lib.VehicleMediaRequest request) {
     pp('$mm confirm dialog for navigation to vehicle media control ');
 
@@ -206,7 +215,7 @@ class DashboardState extends ConsumerState<Dashboard>
         await _getRoutes();
         await _getLandmarks();
         await _getCars();
-        await _getDispatches();
+        await _getDispatches(false);
         await _getAssociationVehicleMediaRequests(false);
         _setTexts();
       }
@@ -228,8 +237,8 @@ class DashboardState extends ConsumerState<Dashboard>
       manualDispatch,
       vehiclesText,
       routesText,
-      landmarksText,
-      dispatchesText,
+      landmarksText, days,
+      dispatchesText, passengers,
       marshalText;
 
   Future _setTexts() async {
@@ -246,10 +255,13 @@ class DashboardState extends ConsumerState<Dashboard>
     dispatchesText =
         await translator.translate('dispatches', colorAndLocale.locale);
 
-    marshalText = await translator.translate('marshal', colorAndLocale.locale);
+    passengers = await translator.translate('passengers', colorAndLocale.locale);
+    days = await translator.translate('days', colorAndLocale.locale);
+
     setState(() {});
   }
 
+  int daysForData = 7;
   Future _getRoutes() async {
     pp('$mm ... marshal dashboard; getting routes: ${routes.length} ...');
 
@@ -267,13 +279,22 @@ class DashboardState extends ConsumerState<Dashboard>
     setState(() {});
   }
 
-  Future _getDispatches() async {
+  Future _getDispatches(bool refresh) async {
     pp('$mm ... marshal dashboard; getting dispatches: ${dispatchRecords.length} ...');
-
-    dispatchRecords =
-        await listApiDog.getMarshalDispatchRecords(user!.userId!, false);
-    pp('$mm ... marshal dashboard; dispatchRecords: ${dispatchRecords.length} ...');
-    setState(() {});
+    setState(() {
+      busy = true;
+    });
+    try {
+      dispatchRecords =
+              await listApiDog.getMarshalDispatchRecords(userId:user!.userId!, refresh: refresh, days: daysForData);
+      _aggregatePassengers();
+      pp('$mm ... marshal dashboard; dispatchRecords: ${dispatchRecords.length} ...');
+    } catch (e) {
+      pp(e);
+    }
+    setState(() {
+      busy = false;
+    });
   }
 
   Future _getLandmarks() async {
@@ -336,7 +357,7 @@ class DashboardState extends ConsumerState<Dashboard>
                     )),
                 IconButton(
                     onPressed: () {
-                      //
+                      _getDispatches(true);
                     },
                     icon: Icon(
                       Icons.refresh,
@@ -346,18 +367,8 @@ class DashboardState extends ConsumerState<Dashboard>
             ),
             body: Stack(
               children: [
-                busy
-                    ? const Center(
-                        child: SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 6,
-                            backgroundColor: Colors.white,
-                          ),
-                        ),
-                      )
-                    : Padding(
+
+                    Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Card(
                           shape: getRoundedBorder(radius: 16),
@@ -387,6 +398,7 @@ class DashboardState extends ConsumerState<Dashboard>
                               SizedBox(
                                   width: 300,
                                   child: ElevatedButton(
+                                    style: const ButtonStyle(elevation: MaterialStatePropertyAll(8.0)),
                                       onPressed: () {
                                         _navigateToScanDispatch();
                                       },
@@ -399,25 +411,55 @@ class DashboardState extends ConsumerState<Dashboard>
                               const SizedBox(
                                 height: 24,
                               ),
-                              SizedBox(
-                                  width: 300,
-                                  child: TextButton(
-                                      // style: ButtonStyle(
-                                      //   backgroundColor: MaterialStatePropertyAll(Theme.of(context).unselectedWidgetColor)
-                                      // ),
-                                      onPressed: () {
-                                        _navigateToManualDispatch();
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Text(manualDispatch == null
-                                            ? 'Manual Dispatch'
-                                            : manualDispatch!),
-                                      ))),
+                              // SizedBox(
+                              //     width: 300,
+                              //     child: TextButton(
+                              //         // style: ButtonStyle(
+                              //         //   backgroundColor: MaterialStatePropertyAll(Theme.of(context).unselectedWidgetColor)
+                              //         // ),
+                              //         onPressed: () {
+                              //           _navigateToManualDispatch();
+                              //         },
+                              //         child: Padding(
+                              //           padding: const EdgeInsets.all(16.0),
+                              //           child: Text(manualDispatch == null
+                              //               ? 'Manual Dispatch'
+                              //               : manualDispatch!),
+                              //         ))),
                               const SizedBox(
-                                height: 24,
+                                height: 8,
                               ),
-                              Expanded(
+                              Row(mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      DaysDropDown(onDaysPicked: (days){
+                                        daysForData = days;
+                                        setState(() {
+
+                                        });
+                                        _getDispatches(true);
+                                      }, hint: days == null? 'Days': days!),
+                                      const SizedBox(width: 20,),
+                                      Text('$daysForData', style: myTextStyleMediumLargeWithColor(context, Theme.of(context).primaryColorLight, 24),)
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              busy
+                                  ? const Center(
+                                child: SizedBox(
+                                  height: 24,
+                                  width: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 6,
+                                    backgroundColor: Colors.white,
+                                  ),
+                                ),
+                              ) : Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
                                   child: GridView(
@@ -428,6 +470,22 @@ class DashboardState extends ConsumerState<Dashboard>
                                       crossAxisCount: 2,
                                     ),
                                     children: [
+                                      TotalWidget(
+                                          caption: dispatchesText == null
+                                              ? 'Dispatches'
+                                              : dispatchesText!,
+                                          number: dispatchRecords.length,
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize: 32,
+                                          onTapped: () {}),
+                                      TotalWidget(
+                                          caption: passengers == null
+                                              ? 'Passengers'
+                                              : passengers!,
+                                          number: totalPassengers,
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize: 32,
+                                          onTapped: () {}),
                                       TotalWidget(
                                           caption: vehiclesText == null
                                               ? 'Vehicles'
@@ -452,14 +510,7 @@ class DashboardState extends ConsumerState<Dashboard>
                                           color: Colors.grey.shade600,
                                           fontSize: 32,
                                           onTapped: () {}),
-                                      TotalWidget(
-                                          caption: dispatchesText == null
-                                              ? 'Dispatches'
-                                              : dispatchesText!,
-                                          number: dispatchRecords.length,
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 40,
-                                          onTapped: () {}),
+
                                     ],
                                   ),
                                 ),
@@ -563,11 +614,12 @@ class NumberAndCaption extends StatelessWidget {
   final double fontSize;
   @override
   Widget build(BuildContext context) {
+    final fmt = NumberFormat.decimalPattern();
     return SizedBox(height: 64,
       child: Column(
         children: [
           Text(
-            '$number',
+            fmt.format(number),
             style:
             myNumberStyleLargerWithColor(color, fontSize, context),
           ),
