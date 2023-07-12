@@ -18,6 +18,7 @@
 	 hashMap['createNewPlace'] = 'createNewPlace';
 	 hashMap['createNewRoute'] = 'createNewRoute';
 	 hashMap['createOrUpdate'] = 'createOrUpdate';
+	 hashMap['currentLocation'] = 'currentLocation';
 	 hashMap['currentPassengers'] = 'currentPassengers';
 	 hashMap['dashboard'] = 'dashboard';
 	 hashMap['dataLoader'] = 'dataLoader';
@@ -48,6 +49,7 @@
 	 hashMap['enterPhone'] = 'enterPhone';
 	 hashMap['enterPlace'] = 'enterPlace';
 	 hashMap['enterRouteName'] = 'enterRouteName';
+	 hashMap['errorCount'] = 'errorCount';
 	 hashMap['errorGettingData'] = 'errorGettingData';
 	 hashMap['errorNetwork'] = 'errorNetwork';
 	 hashMap['errorScanner'] = 'errorScanner';
@@ -196,5 +198,6 @@
 	 hashMap['xh'] = 'xh';
 	 hashMap['yes'] = 'yes';
 	 hashMap['yo'] = 'yo';
+	 hashMap['youAreHere'] = 'youAreHere';
 	 hashMap['zh'] = 'zh';
 	 hashMap['zu'] = 'zu';

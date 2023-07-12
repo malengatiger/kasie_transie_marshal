@@ -398,7 +398,9 @@ class DashboardState extends ConsumerState<Dashboard>
                               SizedBox(
                                   width: 300,
                                   child: ElevatedButton(
-                                    style: const ButtonStyle(elevation: MaterialStatePropertyAll(8.0)),
+                                    style:  ButtonStyle(
+                                        shape: MaterialStatePropertyAll(getRoundedBorder(radius: 16)),
+                                        elevation: const MaterialStatePropertyAll(8.0)),
                                       onPressed: () {
                                         _navigateToScanDispatch();
                                       },

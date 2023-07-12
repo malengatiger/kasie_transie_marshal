@@ -8,6 +8,8 @@ class Assets {
   static const String assetsBatman = 'assets/batman.png';
   static const String assetsBeep1 = 'assets/beep1.mp3';
   static const String assetsBeep2 = 'assets/beep2.wav';
+  static const String assetsCar1 = 'assets/car1.png';
+  static const String assetsCar2 = 'assets/car2.png';
   static const String assetsDe = 'assets/de.json';
   static const String assetsEn = 'assets/en.json';
   static const String assetsEs = 'assets/es.json';
