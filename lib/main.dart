@@ -2,18 +2,16 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kasie_transie_library/bloc/data_api_dog.dart';
 import 'package:kasie_transie_library/bloc/theme_bloc.dart';
 import 'package:kasie_transie_library/data/schemas.dart' as lib;
-import 'package:kasie_transie_library/providers/kasie_providers.dart';
+import 'package:kasie_transie_library/messaging/fcm_bloc.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_marshal/ui/dashboard.dart';
 import 'package:page_transition/page_transition.dart';
 
-import 'auth/phone_auth_signin.dart';
 import 'firebase_options.dart';
 import 'intro/splash_page.dart';
 
@@ -34,28 +32,24 @@ Future<void> main() async {
   } else {
     pp('$mx fbAuthUser: is null. Need to authenticate the app!');
   }
-  pp('$mx ... getCountries starting from LandingPage ...');
-
   me = await prefs.getUser();
 
-  runApp(const ProviderScope(child: KasieTransieApp()));
+// Background message handler
+  FirebaseMessaging.onBackgroundMessage(kasieFirebaseMessagingBackgroundHandler);
+
+  runApp(const KasieTransieMarshal());
 }
 
 int themeIndex = 0;
-// late Locale locale;
+// late Locale locale;R
 lib.User? me;
 
-class KasieTransieApp extends ConsumerWidget {
-  const KasieTransieApp({super.key});
+class KasieTransieMarshal extends StatelessWidget {
+  const KasieTransieMarshal({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    pp('$mx ref from RiverPod Provider: ref: $ref');
-    var m = ref.watch(countryProvider);
-    if (m.hasValue) {
-      pp('$mx value from the watch: ${m.value?.length} from RiverPod Provide');
-    }
+  Widget build(BuildContext context) {
 
     return StreamBuilder(
         stream: themeBloc.localeAndThemeStream,

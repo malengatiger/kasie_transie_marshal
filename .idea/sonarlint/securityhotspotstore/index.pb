@@ -9,8 +9,6 @@ X
 (lib/intro/empty_dashboard_container.dart,c/0/c0ca38e9488f362f8321ed5e691018955041801b
 Y
 )android/kasie_transie_marshal_android.iml,8/1/81595593cd37767bbd30a9e734c3987c85be2b84
-B
-assets/intl_en.arb,9/1/9119b1dcb10f1597aedefbf6d7588e2cc0924485
 ;
 ios/Podfile,5/1/510807778b56990ed3829592aea48d7a35b42809
 U
@@ -27,8 +25,6 @@ S
 #ios/Runner/GoogleService-Info.plist,0/b/0b789df27cb2d2dad956de47ce5af443d6a6cb25
 b
 2lib/intro/kasie_auth/association_registration.dart,f/0/f0dafc98f3419a66a42823869ca83730e76d1736
-I
-lib/firebase_options.dart,0/f/0f4c3391435ed7c33948e13687a0bd929288bdb6
 G
 assets/files/people.csv,0/0/00d79e0e826397b2e114a1189d6848b9dda3fd65
 U
@@ -39,8 +35,6 @@ U
 %macos/Runner/GoogleService-Info.plist,e/0/e0374accc7af5fd64c30d08233dce2fbffc36e87
 B
 android/.gitignore,f/1/f147f918c47edab19f40093aee6e93ae28629e1c
-W
-'windows/flutter/generated_plugins.cmake,8/8/88ca6865187a33a9504c7309c5e20c833b7b0094
 N
 windows/flutter/CMakeLists.txt,7/7/771a7602debd631ba43a2ba87727b34822bf519b
 T
@@ -115,14 +109,10 @@ L
 ios/Flutter/Release.xcconfig,a/8/a878ec9fe4be957605474af1e44d459557bf4dd3
 Q
 !ios/RunnerTests/RunnerTests.swift,c/f/cfe67a6c3cd1793f00aa5273695b7e2875c15f2e
-D
-android/build.gradle,1/3/13f012f60e18f38225ce59137db2e07d5d70b29c
 q
 Aios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata,9/c/9c173bf7e10bf1842348f8d4e94f7e9c3a4d09df
 H
 android/app/build.gradle,5/9/594ba479000e0bb5513707b709ad1cd52da9063a
-X
-(android/app/src/main/AndroidManifest.xml,e/f/ef79bfd51db69a15dbf5807c05bb249bdccb0556
 J
 ios/Flutter/Debug.xcconfig,0/0/000e7013d35dd014f463168b55b75a1c98b25bb8
 _
@@ -131,8 +121,6 @@ R
 "ios/Flutter/AppFrameworkInfo.plist,d/c/dcf6bab66022807af0d3467afc4bc1c2594538c4
 Å
 Q.idea/sonarlint/securityhotspotstore/8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d,1/0/10a03f31c4dce92cb371e761ce9429428bb6c176
-E
-test/widget_test.dart,8/8/88fe0f60a6af31ca841a0d74d4ee9642f8d32eb2
 P
  android/app/google-services.json,e/e/ee748fb75df5665a631a74614646f499f3cea78f
 V
@@ -161,14 +149,10 @@ p
 ios/.gitignore,0/3/03aa80dc04aaede1dd5625b4da5cb4fbe07baaff
 S
 #ios/Runner/Runner-Bridging-Header.h,8/2/8220ac45b80647648436b79bfc43dab44e30fdde
-\
-,linux/flutter/generated_plugin_registrant.cc,8/2/82aa08567025817252f7150da6951611f932fce3
 E
 ios/Runner/Info.plist,7/0/7076b60f5e64ebfddc934ae3c4a7a7b87e461a6f
 Ä
 Pmacos/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist,4/4/441e866665f1088069379e4627c7797a107aed85
-U
-%linux/flutter/generated_plugins.cmake,e/a/ea61ff9ff38cb6431283c0e1c4f383234ad068aa
 L
 linux/flutter/CMakeLists.txt,f/8/f871e65f12c98cc1c448b643b9882b86da7e0399
 L
@@ -205,8 +189,6 @@ G
 macos/Runner/Info.plist,6/a/6aa84570038895fdfc615cade318abb9ce846e7b
 G
 android/settings.gradle,a/4/a44f117a07597d287cedd2edb512680ab4b470f0
-^
-.windows/flutter/generated_plugin_registrant.cc,a/4/a460a0a443b57f23ba67cbcc77064889847c76a7
 `
 0android/app/src/main/res/values-night/styles.xml,4/e/4e6983532b567702817f41cb4202cebaa69c60f5
 V
@@ -215,13 +197,22 @@ M
 lib/intro/intro_page_one.dart,4/6/464c2440c935f8ad7fe225cee4b37dbc68b30b09
 @
 ios/Podfile.lock,6/f/6fc5efc9eba1a38c53e9a557a6ebda2b662185e1
-<
-pubspec.yaml,e/8/e8e045469170189f1d6ef12576bd01af132b1018
 ^
 .android/app/src/main/res/drawable/app_icon.xml,4/1/41be73f05525cc44d6c6cf9f8c491ad0a1dae296
-O
-lib/auth/phone_auth_signin.dart,e/d/ed017848211d6cf1bb53695f5d95a2b3310634cf
 J
 lib/auth/starter_pack.dart,4/4/44a35d5679db83a07cd8f900adb26e0d65d38a50
 J
 lib/intro/kasie_intro.dart,8/2/82f248876dbd4c1eae928a0af1a06ab11db3b739
+J
+lib/intro/splash_page.dart,5/1/519c5669eb9f9000279cb6abe40f1287040a0798
+>
+translate.json,6/4/6446f8231a1928700bc2a61e1825f002e7e141bc
+:
+
+.gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
+I
+lib/firebase_options.dart,0/f/0f4c3391435ed7c33948e13687a0bd929288bdb6
+X
+(android/app/src/main/AndroidManifest.xml,e/f/ef79bfd51db69a15dbf5807c05bb249bdccb0556
+>
+assets/af.json,7/9/79a1071649455e099995c3c9dff8abd9541b5bce

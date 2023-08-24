@@ -10,27 +10,28 @@ import 'package:kasie_transie_library/data/color_and_locale.dart';
 import 'package:kasie_transie_library/data/schemas.dart' as lib;
 import 'package:kasie_transie_library/isolates/routes_isolate.dart';
 import 'package:kasie_transie_library/l10n/translation_handler.dart';
+import 'package:kasie_transie_library/maps/association_route_maps.dart';
 import 'package:kasie_transie_library/messaging/fcm_bloc.dart';
 import 'package:kasie_transie_library/providers/kasie_providers.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/utils/navigator_utils.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
+import 'package:kasie_transie_library/widgets/auth/cell_auth_signin.dart';
 import 'package:kasie_transie_library/widgets/days_drop_down.dart';
 import 'package:kasie_transie_library/widgets/language_and_color_chooser.dart';
-import 'package:kasie_transie_marshal/auth/phone_auth_signin.dart';
 import 'package:kasie_transie_library/bloc/dispatch_helper.dart';
-import 'package:kasie_transie_marshal/ui/dispatch_via_scan.dart';
-import 'package:kasie_transie_marshal/ui/scan_dispatch.dart';
-import 'package:kasie_transie_marshal/ui/scan_vehicle_for_media.dart';
+import 'package:kasie_transie_library/widgets/scanners/dispatch_via_scan.dart';
+import 'package:kasie_transie_library/widgets/scanners/scan_vehicle_for_media.dart';
+import 'package:kasie_transie_library/widgets/timer_widget.dart';
 
-class Dashboard extends ConsumerStatefulWidget {
+class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
 
   @override
-  ConsumerState createState() => DashboardState();
+  DashboardState createState() => DashboardState();
 }
 
-class DashboardState extends ConsumerState<Dashboard>
+class DashboardState extends State<Dashboard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   static const mm = '😡😡😡😡😡😡😡 Dashboard: 💪 ';
@@ -54,6 +55,7 @@ class DashboardState extends ConsumerState<Dashboard>
     _controller = AnimationController(vsync: this);
     super.initState();
     _listen();
+    _setTexts();
     _getAuthenticationStatus();
   }
 
@@ -87,6 +89,7 @@ class DashboardState extends ConsumerState<Dashboard>
       totalPassengers += value.passengers!;
     }
   }
+
   void _confirmNavigationToPhotos(lib.VehicleMediaRequest request) {
     pp('$mm confirm dialog for navigation to vehicle media control ');
 
@@ -149,29 +152,37 @@ class DashboardState extends ConsumerState<Dashboard>
   void _getAuthenticationStatus() async {
     pp('\n\n$mm _getAuthenticationStatus ....... '
         'check both Firebase user and Kasie user');
-    var user = await prefs.getUser();
+    user = await prefs.getUser();
     var firebaseUser = FirebaseAuth.instance.currentUser;
 
     if (user != null && firebaseUser != null) {
       pp('$mm _getAuthenticationStatus .......  '
           '🥬🥬🥬auth is DEFINITELY authenticated and OK');
-      user = await prefs.getUser();
       authed = true;
       fcmBloc.subscribeToTopics('MarshallApp');
-      setState(() {});
       _getData();
     } else {
       pp('$mm _getAuthenticationStatus ....... NOT AUTHENTICATED! '
           '🌼🌼🌼 ... will clean house!!');
       authed = false;
-      //todo - ensure that the right thing gets done!
-      pp('$mm _getAuthenticationStatus .......  '
-          '🔴🔴🔴🔴'
-          'the device should be ready for sign in or registration');
+      _navigateToPhoneAuth();
     }
-    pp('$mm ......... _getAuthenticationStatus ....... setting state, authed = $authed ');
+  }
 
-    setState(() {});
+  Future _navigateToPhoneAuth() async {
+    pp('$mm ... _navigateToPhoneAuth ....');
+    user = await navigateWithScale(
+        CustomPhoneVerification(
+            onUserAuthenticated: (u) {},
+            onError: () {},
+            onCancel: () {},
+            onLanguageChosen: () {}),
+        context);
+
+    if (user != null) {
+      pp('$mm ... back from _navigateToPhoneAuth  with user: ${user!.name}');
+      _getData();
+    }
   }
 
   var requests = <lib.VehicleMediaRequest>[];
@@ -183,17 +194,6 @@ class DashboardState extends ConsumerState<Dashboard>
         .toIso8601String();
     requests = await listApiDog.getAssociationVehicleMediaRequests(
         user!.associationId!, startDate, refresh);
-  }
-
-  Future<void> _navigateToAuth() async {
-    var res = await navigateWithScale(
-        CellPhoneAuthSignin(dataApiDog: dataApiDog), context);
-    pp('\n\n$mm ................ back from sign in: $res');
-    setState(() {
-      busy = false;
-    });
-    user = await prefs.getUser();
-    _getData();
   }
 
   void _navigateToScanVehicleForMedia() {
@@ -217,7 +217,6 @@ class DashboardState extends ConsumerState<Dashboard>
         await _getCars();
         await _getDispatches(false);
         await _getAssociationVehicleMediaRequests(false);
-        _setTexts();
       }
     } catch (e) {
       pp(e);
@@ -237,11 +236,15 @@ class DashboardState extends ConsumerState<Dashboard>
       manualDispatch,
       vehiclesText,
       routesText,
-      landmarksText, days,
-      dispatchesText, passengers,
+      landmarksText,
+      days,
+      dispatchesText,
+      passengers,
       marshalText;
+  String welcome = '', startSignIn = ' ', firstTime = '';
 
   Future _setTexts() async {
+    colorAndLocale = await prefs.getColorAndLocale();
     dispatchWithScan =
         await translator.translate('dispatchWithScan', colorAndLocale.locale);
     manualDispatch =
@@ -255,8 +258,14 @@ class DashboardState extends ConsumerState<Dashboard>
     dispatchesText =
         await translator.translate('dispatches', colorAndLocale.locale);
 
-    passengers = await translator.translate('passengers', colorAndLocale.locale);
+    passengers =
+        await translator.translate('passengers', colorAndLocale.locale);
     days = await translator.translate('days', colorAndLocale.locale);
+
+    welcome = await translator.translate('welcome', colorAndLocale.locale);
+    startSignIn =
+        await translator.translate('signInWithPhone', colorAndLocale.locale);
+    firstTime = await translator.translate('firstTime', colorAndLocale.locale);
 
     setState(() {});
   }
@@ -285,8 +294,8 @@ class DashboardState extends ConsumerState<Dashboard>
       busy = true;
     });
     try {
-      dispatchRecords =
-              await listApiDog.getMarshalDispatchRecords(userId:user!.userId!, refresh: refresh, days: daysForData);
+      dispatchRecords = await listApiDog.getMarshalDispatchRecords(
+          userId: user!.userId!, refresh: refresh, days: daysForData);
       _aggregatePassengers();
       pp('$mm ... marshal dashboard; dispatchRecords: ${dispatchRecords.length} ...');
     } catch (e) {
@@ -319,254 +328,264 @@ class DashboardState extends ConsumerState<Dashboard>
     navigateWithScale(const DispatchViaScan(), context);
   }
 
-  void _navigateToManualDispatch() async {}
-
   Future _navigateToColor() async {
     pp('$mm _navigateToColor ......');
-    await navigateWithScale(const LanguageAndColorChooser(), context);
+    await navigateWithScale(
+        LanguageAndColorChooser(
+          onLanguageChosen: () {},
+        ),
+        context);
     colorAndLocale = await prefs.getColorAndLocale();
     await _setTexts();
+  }
+  void _navigateToMap() {
+    navigateWithScale(const AssociationRouteMaps(), context);
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-            appBar: AppBar(
-              leading: const SizedBox(),
-              title: Text(
-                marshalText == null ? 'Marshal' : marshalText!,
-                style: myTextStyleLarge(context),
-              ),
-              actions: [
-                IconButton(
-                    onPressed: () {
-                      _navigateToScanVehicleForMedia();
-                    },
-                    icon: Icon(
-                      Icons.camera_alt,
-                      color: Theme.of(context).primaryColor,
-                    )),
-                IconButton(
-                    onPressed: () {
-                      _navigateToColor();
-                    },
-                    icon: Icon(
-                      Icons.color_lens,
-                      color: Theme.of(context).primaryColor,
-                    )),
-                IconButton(
-                    onPressed: () {
-                      _getDispatches(true);
-                    },
-                    icon: Icon(
-                      Icons.refresh,
-                      color: Theme.of(context).primaryColor,
-                    )),
-              ],
-            ),
-            body: Stack(
-              children: [
-
-                    Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          shape: getRoundedBorder(radius: 16),
-                          elevation: 4,
-                          child: Column(
-                            children: [
-                              const SizedBox(
-                                height: 32,
-                              ),
-                              Text(
-                                user == null
-                                    ? 'Association Name'
-                                    : user!.associationName!,
-                                style: myTextStyleMediumLargeWithColor(context,
-                                    Theme.of(context).primaryColor, 18),
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              Text(
-                                user == null ? 'Marshal Name' : user!.name,
-                                style: myTextStyleSmall(context),
-                              ),
-                              const SizedBox(
-                                height: 24,
-                              ),
-                              SizedBox(
-                                  width: 300,
-                                  child: ElevatedButton(
-                                    style:  ButtonStyle(
-                                        shape: MaterialStatePropertyAll(getRoundedBorder(radius: 16)),
-                                        elevation: const MaterialStatePropertyAll(8.0)),
-                                      onPressed: () {
-                                        _navigateToScanDispatch();
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Text(dispatchWithScan == null
-                                            ? 'Dispatch with Scan'
-                                            : dispatchWithScan!),
-                                      ))),
-                              const SizedBox(
-                                height: 24,
-                              ),
-                              // SizedBox(
-                              //     width: 300,
-                              //     child: TextButton(
-                              //         // style: ButtonStyle(
-                              //         //   backgroundColor: MaterialStatePropertyAll(Theme.of(context).unselectedWidgetColor)
-                              //         // ),
-                              //         onPressed: () {
-                              //           _navigateToManualDispatch();
-                              //         },
-                              //         child: Padding(
-                              //           padding: const EdgeInsets.all(16.0),
-                              //           child: Text(manualDispatch == null
-                              //               ? 'Manual Dispatch'
-                              //               : manualDispatch!),
-                              //         ))),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              Row(mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: [
-                                      DaysDropDown(onDaysPicked: (days){
-                                        daysForData = days;
-                                        setState(() {
-
-                                        });
-                                        _getDispatches(true);
-                                      }, hint: days == null? 'Days': days!),
-                                      const SizedBox(width: 20,),
-                                      Text('$daysForData', style: myTextStyleMediumLargeWithColor(context, Theme.of(context).primaryColorLight, 24),)
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              busy
-                                  ? const Center(
-                                child: SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 6,
-                                    backgroundColor: Colors.white,
-                                  ),
-                                ),
-                              ) : Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: GridView(
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisSpacing: 2,
-                                      mainAxisSpacing: 2,
-                                      crossAxisCount: 2,
-                                    ),
-                                    children: [
-                                      TotalWidget(
-                                          caption: dispatchesText == null
-                                              ? 'Dispatches'
-                                              : dispatchesText!,
-                                          number: dispatchRecords.length,
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 32,
-                                          onTapped: () {}),
-                                      TotalWidget(
-                                          caption: passengers == null
-                                              ? 'Passengers'
-                                              : passengers!,
-                                          number: totalPassengers,
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 32,
-                                          onTapped: () {}),
-                                      TotalWidget(
-                                          caption: vehiclesText == null
-                                              ? 'Vehicles'
-                                              : vehiclesText!,
-                                          number: cars.length,
-                                          color: Colors.grey.shade600,
-                                          fontSize: 32,
-                                          onTapped: () {}),
-                                      TotalWidget(
-                                          caption: routesText == null
-                                              ? 'Routes'
-                                              : routesText!,
-                                          number: routes.length,
-                                          color: Colors.grey.shade600,
-                                          fontSize: 32,
-                                          onTapped: () {}),
-                                      TotalWidget(
-                                          caption: landmarksText == null
-                                              ? 'Landmarks'
-                                              : landmarksText!,
-                                          number: routeLandmarks.length,
-                                          color: Colors.grey.shade600,
-                                          fontSize: 32,
-                                          onTapped: () {}),
-
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+      child: Scaffold(
+        appBar: AppBar(
+          leading: const SizedBox(),
+          title: Text(
+            marshalText == null ? 'Marshal' : marshalText!,
+            style: myTextStyleLarge(context),
+          ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  _navigateToMap();
+                },
+                icon: Icon(
+                  Icons.map,
+                  color: Theme.of(context).primaryColor,
+                )),
+            IconButton(
+                onPressed: () {
+                  _navigateToScanVehicleForMedia();
+                },
+                icon: Icon(
+                  Icons.camera_alt,
+                  color: Theme.of(context).primaryColor,
+                )),
+            IconButton(
+                onPressed: () {
+                  _navigateToColor();
+                },
+                icon: Icon(
+                  Icons.color_lens,
+                  color: Theme.of(context).primaryColor,
+                )),
+          ],
+        ),
+        body: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                shape: getRoundedBorder(radius: 16),
+                elevation: 4,
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    Text(
+                      user == null
+                          ? 'Association Name'
+                          : user!.associationName!,
+                      style: myTextStyleMediumLargeWithColor(
+                          context, Theme.of(context).primaryColor, 18),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      user == null ? 'Marshal Name' : user!.name,
+                      style: myTextStyleSmall(context),
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    SizedBox(
+                        width: 300,
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                                shape: MaterialStatePropertyAll(
+                                    getRoundedBorder(radius: 16)),
+                                elevation: const MaterialStatePropertyAll(8.0)),
+                            onPressed: () {
+                              _navigateToScanDispatch();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(dispatchWithScan == null
+                                  ? 'Dispatch with Scan'
+                                  : dispatchWithScan!),
+                            ))),
+                    gapH32,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            DaysDropDown(
+                                onDaysPicked: (days) {
+                                  daysForData = days;
+                                  setState(() {});
+                                  _getDispatches(true);
+                                },
+                                hint: days == null ? 'Days' : days!),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Text(
+                              '$daysForData',
+                              style: myTextStyleMediumLargeWithColor(context,
+                                  Theme.of(context).primaryColorLight, 24),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: GridView(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisSpacing: 2,
+                            mainAxisSpacing: 2,
+                            crossAxisCount: 2,
                           ),
+                          children: [
+                            TotalWidget(
+                                caption: dispatchesText == null
+                                    ? 'Dispatches'
+                                    : dispatchesText!,
+                                number: dispatchRecords.length,
+                                color: Theme.of(context).primaryColor,
+                                fontSize: 32,
+                                onTapped: () {}),
+                            TotalWidget(
+                                caption: passengers == null
+                                    ? 'Passengers'
+                                    : passengers!,
+                                number: totalPassengers,
+                                color: Theme.of(context).primaryColor,
+                                fontSize: 32,
+                                onTapped: () {}),
+                            TotalWidget(
+                                caption: vehiclesText == null
+                                    ? 'Vehicles'
+                                    : vehiclesText!,
+                                number: cars.length,
+                                color: Colors.grey.shade600,
+                                fontSize: 32,
+                                onTapped: () {}),
+                            TotalWidget(
+                                caption:
+                                    routesText == null ? 'Routes' : routesText!,
+                                number: routes.length,
+                                color: Colors.grey.shade600,
+                                fontSize: 32,
+                                onTapped: () {}),
+                            TotalWidget(
+                                caption: landmarksText == null
+                                    ? 'Landmarks'
+                                    : landmarksText!,
+                                number: routeLandmarks.length,
+                                color: Colors.grey.shade600,
+                                fontSize: 32,
+                                onTapped: () {}),
+                          ],
                         ),
                       ),
-                user == null
-                    ? Positioned(
-                        left: 12,
-                        right: 12,
-                        top: 64,
-                        bottom: 64,
-                        child: Center(
-                          child: Card(
-                            shape: getRoundedBorder(radius: 16),
-                            elevation: 8,
-                            child: SizedBox(
-                              height: 400,
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 64,
-                                    ),
-                                    Text(
-                                      'Welcome!',
-                                      style: myTextStyleLarge(context),
-                                    ),
-                                    const SizedBox(
-                                      height: 32,
-                                    ),
-                                    const Text(
-                                        'Welcome! This is the first time that you have opened the app and you '
-                                        'need to sign in to your Taxi Association or other organization.'),
-                                    const SizedBox(
-                                      height: 64,
-                                    ),
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          _navigateToAuth();
-                                        },
-                                        child: const Text('Start Sign In')),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ))
-                    : const SizedBox()
-              ],
-            )));
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            busy
+                ? const Positioned(
+                    child: Center(
+                        child: TimerWidget(
+                            title: 'Loading data ...', isSmallSize: false)))
+                : gapH32,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Welcome extends StatelessWidget {
+  const Welcome(
+      {Key? key,
+      required this.welcome,
+      required this.onAuthRequested,
+      required this.firstTime,
+      required this.startSignIn})
+      : super(key: key);
+
+  final String welcome, firstTime, startSignIn;
+  final Function onAuthRequested;
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        // appBar: AppBar(
+        //   leading: const SizedBox(),
+        //   title: Text(
+        //     welcome,
+        //     style: myTextStyleMediumLargeWithColor(
+        //         context, Theme.of(context).primaryColor, 24),
+        //   ),
+        // ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Card(
+            shape: getRoundedBorder(radius: 16),
+            elevation: 8,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 64,
+                  ),
+                  Text(
+                    welcome,
+                    style: myTextStyleLarge(context),
+                  ),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  Text(firstTime),
+                  const SizedBox(
+                    height: 64,
+                  ),
+                  SizedBox(
+                    width: 320,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          onAuthRequested();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(startSignIn),
+                        )),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -600,7 +619,11 @@ class TotalWidget extends StatelessWidget {
           child: Center(
             child: SizedBox(
               height: 80,
-              child: NumberAndCaption(caption: caption, number: number, color: color, fontSize: fontSize),
+              child: NumberAndCaption(
+                  caption: caption,
+                  number: number,
+                  color: color,
+                  fontSize: fontSize),
             ),
           ),
         ),
@@ -608,8 +631,15 @@ class TotalWidget extends StatelessWidget {
     );
   }
 }
+
 class NumberAndCaption extends StatelessWidget {
-  const NumberAndCaption({Key? key, required this.caption, required this.number, required this.color, required this.fontSize}) : super(key: key);
+  const NumberAndCaption(
+      {Key? key,
+      required this.caption,
+      required this.number,
+      required this.color,
+      required this.fontSize})
+      : super(key: key);
   final String caption;
   final int number;
   final Color color;
@@ -617,13 +647,13 @@ class NumberAndCaption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fmt = NumberFormat.decimalPattern();
-    return SizedBox(height: 64,
+    return SizedBox(
+      height: 64,
       child: Column(
         children: [
           Text(
             fmt.format(number),
-            style:
-            myNumberStyleLargerWithColor(color, fontSize, context),
+            style: myNumberStyleLargerWithColor(color, fontSize, context),
           ),
           const SizedBox(
             height: 4,
@@ -637,4 +667,3 @@ class NumberAndCaption extends StatelessWidget {
     );
   }
 }
-

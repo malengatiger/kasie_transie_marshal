@@ -21,14 +21,10 @@ M
 ios/firebase_app_id_file.json,a/0/a0799973e0bf1bad4e739e1320488659cd5da822
 O
 macos/firebase_app_id_file.json,6/9/69ec89e9fa80228d918b8454028210ed2a7849ad
-I
-lib/firebase_options.dart,0/f/0f4c3391435ed7c33948e13687a0bd929288bdb6
 S
 #ios/Runner/GoogleService-Info.plist,0/b/0b789df27cb2d2dad956de47ce5af443d6a6cb25
 U
 %macos/Runner/GoogleService-Info.plist,e/0/e0374accc7af5fd64c30d08233dce2fbffc36e87
-B
-assets/intl_en.arb,9/1/9119b1dcb10f1597aedefbf6d7588e2cc0924485
 G
 assets/files/people.csv,0/0/00d79e0e826397b2e114a1189d6848b9dda3fd65
 H
@@ -57,8 +53,6 @@ E
 analysis_options.yaml,9/5/9573dd68c24611034c89c926cde7e71d100ed7ab
 Y
 )android/app/src/debug/AndroidManifest.xml,e/9/e9b8a57f79617fe2b2612f997e0f60425ebc5097
-X
-(android/app/src/main/AndroidManifest.xml,e/f/ef79bfd51db69a15dbf5807c05bb249bdccb0556
 [
 +android/app/src/profile/AndroidManifest.xml,d/2/d2c744cc316dff823a081098f4a97f18cd817497
 L
@@ -71,8 +65,6 @@ U
 %macos/Runner/Configs/AppInfo.xcconfig,7/5/75e3aec2f7b1dab9d57d4f4ae57cc2929646c452
 H
 android/app/build.gradle,5/9/594ba479000e0bb5513707b709ad1cd52da9063a
-D
-android/build.gradle,1/3/13f012f60e18f38225ce59137db2e07d5d70b29c
 L
 linux/flutter/CMakeLists.txt,f/8/f871e65f12c98cc1c448b643b9882b86da7e0399
 D
@@ -109,18 +101,10 @@ Q
 !windows/runner/flutter_window.cpp,b/4/b47b503cad16cf9e4d85526bfd797a0af060da95
 O
 windows/runner/flutter_window.h,f/b/fbb3daae00ac99961c4bd53fbc19730e9ea2ec97
-\
-,linux/flutter/generated_plugin_registrant.cc,8/2/82aa08567025817252f7150da6951611f932fce3
-^
-.windows/flutter/generated_plugin_registrant.cc,a/4/a460a0a443b57f23ba67cbcc77064889847c76a7
 [
 +linux/flutter/generated_plugin_registrant.h,d/9/d95a1fc8fea41fc6cc122196d542db7f4130fb92
 ]
 -windows/flutter/generated_plugin_registrant.h,c/4/c4f32636ccc6ab3d0e1279d8d53341e15d62642b
-U
-%linux/flutter/generated_plugins.cmake,e/a/ea61ff9ff38cb6431283c0e1c4f383234ad068aa
-W
-'windows/flutter/generated_plugins.cmake,8/8/88ca6865187a33a9504c7309c5e20c833b7b0094
 P
  android/app/google-services.json,e/e/ee748fb75df5665a631a74614646f499f3cea78f
 I
@@ -201,8 +185,6 @@ F
 windows/runner/utils.h,0/0/003634e29d97743ce773f4fbc0887866c43b2792
 V
 &macos/Runner/Configs/Warnings.xcconfig,f/2/f2703f91af23f25cfc5ae0564607710f20886799
-E
-test/widget_test.dart,8/8/88fe0f60a6af31ca841a0d74d4ee9642f8d32eb2
 O
 windows/runner/win32_window.cpp,4/0/402443992cb8042d73cc7d8412a6cf4c0386c94f
 M
@@ -217,11 +199,20 @@ M
 .android/app/src/main/res/drawable/app_icon.xml,4/1/41be73f05525cc44d6c6cf9f8c491ad0a1dae296
 @
 ios/Podfile.lock,6/f/6fc5efc9eba1a38c53e9a557a6ebda2b662185e1
-<
-pubspec.yaml,e/8/e8e045469170189f1d6ef12576bd01af132b1018
-O
-lib/auth/phone_auth_signin.dart,e/d/ed017848211d6cf1bb53695f5d95a2b3310634cf
 J
 lib/auth/starter_pack.dart,4/4/44a35d5679db83a07cd8f900adb26e0d65d38a50
 J
 lib/intro/kasie_intro.dart,8/2/82f248876dbd4c1eae928a0af1a06ab11db3b739
+J
+lib/intro/splash_page.dart,5/1/519c5669eb9f9000279cb6abe40f1287040a0798
+>
+translate.json,6/4/6446f8231a1928700bc2a61e1825f002e7e141bc
+:
+
+.gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
+I
+lib/firebase_options.dart,0/f/0f4c3391435ed7c33948e13687a0bd929288bdb6
+X
+(android/app/src/main/AndroidManifest.xml,e/f/ef79bfd51db69a15dbf5807c05bb249bdccb0556
+>
+assets/af.json,7/9/79a1071649455e099995c3c9dff8abd9541b5bce
