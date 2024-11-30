@@ -1,27 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:kasie_transie_library/bloc/data_api_dog.dart';
 import 'package:kasie_transie_library/bloc/list_api_dog.dart';
-import 'package:kasie_transie_library/providers/kasie_providers.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/utils/navigator_utils.dart';
+import 'package:kasie_transie_library/utils/navigator_utils_old.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_marshal/ui/dashboard.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:kasie_transie_library/data/schemas.dart' as lib;
+import 'package:kasie_transie_library/data/data_schemas.dart' as lib;
 
 import '../intro/kasie_intro.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage(
-      {Key? key,
-      required this.listApiDog,
-      required this.dataApiDog,
-      required this.prefs})
-      : super(key: key);
+      {super.key,});
 
-  final ListApiDog listApiDog;
-  final DataApiDog dataApiDog;
-  final Prefs prefs;
   @override
   LandingPageState createState() => LandingPageState();
 }
@@ -67,7 +60,6 @@ class LandingPageState extends State<LandingPage>
       body: ScreenTypeLayout.builder(
         mobile: (ctx) {
           return KasieIntro(
-            dataApiDog: widget.dataApiDog,
           );
         },
       ),

@@ -1,28 +1,23 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
-import 'package:kasie_transie_library/auth/phone_auth_signin.dart';
+import 'package:kasie_transie_library/auth/phone_auth_signin2.dart';
 import 'package:kasie_transie_library/bloc/data_api_dog.dart';
 import 'package:kasie_transie_library/utils/emojis.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/utils/navigator_utils.dart';
 import 'package:kasie_transie_library/auth/email_auth_signin.dart';
-
+import 'package:kasie_transie_library/utils/navigator_utils_old.dart';
+import 'package:get_it/get_it.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_marshal/ui/dashboard.dart';
 import 'intro_page_one.dart';
 
 class KasieIntro extends StatefulWidget {
   const KasieIntro({
-    Key? key,
+    super.key,
     // required this.listApiDog,
-    required this.dataApiDog,
-  }) : super(key: key);
-
-  // final ListApiDog listApiDog;
-  final DataApiDog dataApiDog;
-
-  // final Prefs prefs;
+  });
 
   @override
   KasieIntroState createState() => KasieIntroState();
@@ -36,6 +31,8 @@ class KasieIntroState extends State<KasieIntro>
   int currentIndexPage = 0;
   final PageController _pageController = PageController();
   fb.FirebaseAuth firebaseAuth = fb.FirebaseAuth.instance;
+  Prefs prefs = GetIt.instance<Prefs>();
+  final DataApiDog dataApiDog = GetIt.instance<DataApiDog>();
 
   // mrm.User? user;
   String? signInFailed;
@@ -50,7 +47,7 @@ class KasieIntroState extends State<KasieIntro>
   void _getAuthenticationStatus() async {
     pp('\n\n$mm _getAuthenticationStatus ....... '
         'check both Firebase user and Kasie user');
-    var user = await prefs.getUser();
+    var user = prefs.getUser();
     var firebaseUser = firebaseAuth.currentUser;
 
     if (user != null && firebaseUser != null) {
@@ -87,7 +84,7 @@ class KasieIntroState extends State<KasieIntro>
 
     Navigator.of(context).push(MaterialPageRoute(
         builder: (ctx) => PhoneAuthSignin(
-            dataApiDog: widget.dataApiDog, onGoodSignIn: (){
+             onGoodSignIn: (){
           pp('$mm ................................'
               '... onGoodSignIn .... ');
               onSuccessfulSignIn();
@@ -290,4 +287,3 @@ class Header extends StatelessWidget {
     );
   }
 }
-

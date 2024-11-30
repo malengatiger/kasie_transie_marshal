@@ -2,28 +2,25 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:kasie_transie_library/bloc/data_api_dog.dart';
 import 'package:kasie_transie_library/bloc/list_api_dog.dart';
 import 'package:kasie_transie_library/data/color_and_locale.dart';
-import 'package:kasie_transie_library/data/schemas.dart' as lib;
-import 'package:kasie_transie_library/isolates/routes_isolate.dart';
+import 'package:kasie_transie_library/data/data_schemas.dart' as lib;
 import 'package:kasie_transie_library/l10n/translation_handler.dart';
 import 'package:kasie_transie_library/maps/association_route_maps.dart';
 import 'package:kasie_transie_library/messaging/fcm_bloc.dart';
-import 'package:kasie_transie_library/providers/kasie_providers.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
-import 'package:kasie_transie_library/utils/navigator_utils.dart';
+import 'package:kasie_transie_library/utils/navigator_utils_old.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
-import 'package:kasie_transie_library/widgets/auth/cell_auth_signin.dart';
 import 'package:kasie_transie_library/widgets/days_drop_down.dart';
 import 'package:kasie_transie_library/widgets/language_and_color_chooser.dart';
-import 'package:kasie_transie_library/bloc/dispatch_helper.dart';
+import 'package:kasie_transie_library/widgets/scanners/dispatch_helper.dart';
 import 'package:kasie_transie_library/widgets/scanners/dispatch_via_scan.dart';
 import 'package:kasie_transie_library/widgets/scanners/scan_vehicle_for_media.dart';
 import 'package:kasie_transie_library/widgets/timer_widget.dart';
+import 'package:kasie_transie_library/auth/phone_auth_signin2.dart';
 
+import 'package:get_it/get_it.dart';
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
 
@@ -46,6 +43,9 @@ class DashboardState extends State<Dashboard>
   bool authed = false;
   var totalPassengers = 0;
   lib.VehicleMediaRequest? vehicleMediaRequest;
+  ListApiDog listApiDog = GetIt.instance<ListApiDog>();
+  Prefs prefs = GetIt.instance<Prefs>();
+
   late StreamSubscription<lib.DispatchRecord> _dispatchStreamSubscription;
   late StreamSubscription<lib.VehicleMediaRequest> _mediaRequestSubscription;
   late StreamSubscription<lib.RouteUpdateRequest> _routeUpdateSubscription;
@@ -139,7 +139,7 @@ class DashboardState extends State<Dashboard>
 
   void _startRouteUpdate(lib.RouteUpdateRequest request) async {
     pp('$mm start route update in isolate for ${request.routeName} ...  ');
-    routesIsolate.getRoute(user!.associationId!, request.routeId!);
+    //routesIsolate.getRoute(user!.associationId!, request.routeId!);
 
     if (mounted) {
       showSnackBar(
@@ -172,11 +172,10 @@ class DashboardState extends State<Dashboard>
   Future _navigateToPhoneAuth() async {
     pp('$mm ... _navigateToPhoneAuth ....');
     user = await navigateWithScale(
-        CustomPhoneVerification(
-            onUserAuthenticated: (u) {},
-            onError: () {},
-            onCancel: () {},
-            onLanguageChosen: () {}),
+        PhoneAuthSignin(
+          onGoodSignIn: (){},
+          onSignInError: (){},
+        ),
         context);
 
     if (user != null) {
@@ -203,12 +202,12 @@ class DashboardState extends State<Dashboard>
 
   Future _getData() async {
     pp('$mm ................... get data for marshal dashboard ...');
-    user = await prefs.getUser();
+    user =  prefs.getUser();
     setState(() {
       busy = true;
     });
     try {
-      colorAndLocale = await prefs.getColorAndLocale();
+      colorAndLocale =  prefs.getColorAndLocale();
       // _setTexts();
 
       if (user != null) {
@@ -271,11 +270,11 @@ class DashboardState extends State<Dashboard>
   }
 
   int daysForData = 7;
+
   Future _getRoutes() async {
     pp('$mm ... marshal dashboard; getting routes: ${routes.length} ...');
 
-    routes = await listApiDog
-        .getRoutes(AssociationParameter(user!.associationId!, false));
+    routes = await listApiDog.getAssociationRoutes(user!.associationId!, false);
     pp('$mm ... marshal dashboard; routes: ${routes.length} ...');
     setState(() {});
   }
@@ -283,7 +282,7 @@ class DashboardState extends State<Dashboard>
   Future _getCars() async {
     pp('$mm ... marshal dashboard; getting cars: ${cars.length} ...');
 
-    cars = await listApiDog.getAssociationVehicles(user!.associationId!, false);
+    cars = await listApiDog.getAssociationCars(user!.associationId!, false);
     pp('$mm ... marshal dashboard; cars: ${cars.length} ...');
     setState(() {});
   }
@@ -412,9 +411,7 @@ class DashboardState extends State<Dashboard>
                         width: 300,
                         child: ElevatedButton(
                             style: ButtonStyle(
-                                shape: MaterialStatePropertyAll(
-                                    getRoundedBorder(radius: 16)),
-                                elevation: const MaterialStatePropertyAll(8.0)),
+                                elevation: const WidgetStatePropertyAll(8.0)),
                             onPressed: () {
                               _navigateToScanDispatch();
                             },
@@ -522,12 +519,11 @@ class DashboardState extends State<Dashboard>
 
 class Welcome extends StatelessWidget {
   const Welcome(
-      {Key? key,
+      {super.key,
       required this.welcome,
       required this.onAuthRequested,
       required this.firstTime,
-      required this.startSignIn})
-      : super(key: key);
+      required this.startSignIn});
 
   final String welcome, firstTime, startSignIn;
   final Function onAuthRequested;
@@ -591,13 +587,12 @@ class Welcome extends StatelessWidget {
 
 class TotalWidget extends StatelessWidget {
   const TotalWidget(
-      {Key? key,
+      {super.key,
       required this.caption,
       required this.number,
       required this.onTapped,
       required this.color,
-      required this.fontSize})
-      : super(key: key);
+      required this.fontSize});
   final String caption;
   final int number;
   final Function onTapped;
@@ -634,12 +629,11 @@ class TotalWidget extends StatelessWidget {
 
 class NumberAndCaption extends StatelessWidget {
   const NumberAndCaption(
-      {Key? key,
+      {super.key,
       required this.caption,
       required this.number,
       required this.color,
-      required this.fontSize})
-      : super(key: key);
+      required this.fontSize});
   final String caption;
   final int number;
   final Color color;

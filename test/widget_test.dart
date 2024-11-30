@@ -13,7 +13,7 @@ import 'package:kasie_transie_marshal/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const KasieTransieMarshal());
+    await tester.pumpWidget( KasieTransieMarshal());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
