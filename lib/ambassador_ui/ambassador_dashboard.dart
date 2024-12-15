@@ -206,7 +206,7 @@ class AmbassadorDashboardState extends State<AmbassadorDashboard>
 
   void _navigateToScanVehicleForMedia() {
     pp('$mm navigate to ScanVehicleForMedia ...  ');
-    NavigationUtils.navigateTo(context: context, widget: ScanVehicleForMedia(), transitionType: PageTransitionType.leftToRight);
+    NavigationUtils.navigateTo(context: context, widget: ScanVehicleForMedia(), );
   }
 
   Future _getData(bool refresh) async {
@@ -353,19 +353,19 @@ class AmbassadorDashboardState extends State<AmbassadorDashboard>
   void _navigateToScanDispatch() async {
     pp('$mm _navigateToScanDispatch ......');
 
-    NavigationUtils.navigateTo(context: context, widget: RoutesForDispatch(), transitionType: PageTransitionType.leftToRight);
+    NavigationUtils.navigateTo(context: context, widget: RoutesForDispatch(), );
 
   }
 
   void _navigateToCountPassengers() async {
     pp('$mm ... _navigateToCountPassengers ...');
-    NavigationUtils.navigateTo(context: context, widget: ScanVehicleForCounts(), transitionType: PageTransitionType.leftToRight);
+    NavigationUtils.navigateTo(context: context, widget: ScanVehicleForCounts(), );
 
   }
   void _navigateToEmailAuth() async {
     pp('$mm ... _navigateToEmailAuth ...');
 
-    NavigationUtils.navigateTo(context: context, widget: EmailAuthSignin(onGoodSignIn: (){}, onSignInError: (){}), transitionType: PageTransitionType.leftToRight);
+    NavigationUtils.navigateTo(context: context, widget: EmailAuthSignin(onGoodSignIn: (){}, onSignInError: (){}), );
 
     if (user != null) {
       pp('$mm ... back from _navigateToPhoneAuth with user: ${user!.name} ...');
@@ -375,7 +375,7 @@ class AmbassadorDashboardState extends State<AmbassadorDashboard>
   void _navigateToPhoneAuth() async {
     pp('$mm ... _navigateToPhoneAuth ...');
 
-    NavigationUtils.navigateTo(context: context, widget: PhoneAuthSignin(onGoodSignIn: (){}, onSignInError: (){}), transitionType: PageTransitionType.leftToRight);
+    NavigationUtils.navigateTo(context: context, widget: PhoneAuthSignin(onGoodSignIn: (){}, onSignInError: (){}), );
 
     if (user != null) {
       pp('$mm ... back from _navigateToPhoneAuth with user: ${user!.name} ...');
@@ -391,12 +391,12 @@ class AmbassadorDashboardState extends State<AmbassadorDashboard>
         setState(() {
 
         });
-      },), transitionType: PageTransitionType.leftToRight);
+      },), );
 
 
   }
   void _navigateToMap() {
-    NavigationUtils.navigateTo(context: context, widget: AssociationRouteMaps(), transitionType: PageTransitionType.leftToRight);
+    NavigationUtils.navigateTo(context: context, widget: AssociationRouteMaps(), );
 
   }
   @override

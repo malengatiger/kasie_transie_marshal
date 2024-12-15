@@ -203,7 +203,7 @@ class MarshalDashboardState extends State<MarshalDashboard>
     NavigationUtils.navigateTo(
         context: context,
         widget: ScanVehicleForMedia(),
-        transitionType: PageTransitionType.leftToRight);
+        );
   }
 
   Future _getData() async {
@@ -334,7 +334,7 @@ class MarshalDashboardState extends State<MarshalDashboard>
     NavigationUtils.navigateTo(
         context: context,
         widget: RoutesForDispatch(),
-        transitionType: PageTransitionType.leftToRight);
+        );
   }
   void _navigateToCarForRankFee() async {
     pp('$mm _navigateToCarForRankFee ......');
@@ -342,7 +342,7 @@ class MarshalDashboardState extends State<MarshalDashboard>
     NavigationUtils.navigateTo(
         context: context,
         widget: CarForRankFee(),
-        transitionType: PageTransitionType.leftToRight);
+        );
   }
   Future _navigateToColor() async {
     pp('$mm _navigateToColor ......');

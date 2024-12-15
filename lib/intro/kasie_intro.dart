@@ -111,7 +111,7 @@ class KasieIntroState extends State<KasieIntro>
             onFailedSignIn();
           },
         ),
-        transitionType: PageTransitionType.leftToRight);
+        );
   }
 
   onRegister() {
@@ -156,14 +156,14 @@ class KasieIntroState extends State<KasieIntro>
         NavigationUtils.navigateTo(
             context: context,
             widget: MarshalDashboard(),
-            transitionType: PageTransitionType.leftToRight);
+            );
       }
       if (user!.userType! == Constants.AMBASSADOR) {
         pp('$mm navigate to AmbassadorDashboard ...');
         NavigationUtils.navigateTo(
             context: context,
             widget: AmbassadorDashboard(),
-            transitionType: PageTransitionType.leftToRight);
+            );
       }
     }
   }
