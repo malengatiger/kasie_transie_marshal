@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kasie_transie_library/bloc/list_api_dog.dart';
@@ -10,25 +9,28 @@ import 'package:kasie_transie_library/l10n/translation_handler.dart';
 import 'package:kasie_transie_library/maps/association_route_maps.dart';
 import 'package:kasie_transie_library/messaging/fcm_bloc.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
+import 'package:kasie_transie_library/utils/navigator_utils.dart';
 import 'package:kasie_transie_library/utils/navigator_utils_old.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
 import 'package:kasie_transie_library/widgets/days_drop_down.dart';
 import 'package:kasie_transie_library/widgets/language_and_color_chooser.dart';
 import 'package:kasie_transie_library/widgets/scanners/dispatch_helper.dart';
-import 'package:kasie_transie_library/widgets/scanners/dispatch_via_scan.dart';
 import 'package:kasie_transie_library/widgets/scanners/scan_vehicle_for_media.dart';
 import 'package:kasie_transie_library/widgets/timer_widget.dart';
 import 'package:kasie_transie_library/auth/phone_auth_signin2.dart';
-
+import 'package:kasie_transie_library/widgets/vehicle_widgets/routes_for_dispatch.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:get_it/get_it.dart';
-class Dashboard extends StatefulWidget {
-  const Dashboard({Key? key}) : super(key: key);
+import 'package:kasie_transie_library/widgets/vehicle_widgets/cars_for_rank_fee.dart';
+
+class MarshalDashboard extends StatefulWidget {
+  const MarshalDashboard({super.key});
 
   @override
-  DashboardState createState() => DashboardState();
+  MarshalDashboardState createState() => MarshalDashboardState();
 }
 
-class DashboardState extends State<Dashboard>
+class MarshalDashboardState extends State<MarshalDashboard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   static const mm = '😡😡😡😡😡😡😡 Dashboard: 💪 ';
@@ -55,8 +57,9 @@ class DashboardState extends State<Dashboard>
     _controller = AnimationController(vsync: this);
     super.initState();
     _listen();
+    user = prefs.getUser();
     _setTexts();
-    _getAuthenticationStatus();
+    // _getAuthenticationStatus();
   }
 
   void _listen() async {
@@ -149,32 +152,32 @@ class DashboardState extends State<Dashboard>
     }
   }
 
-  void _getAuthenticationStatus() async {
-    pp('\n\n$mm _getAuthenticationStatus ....... '
-        'check both Firebase user and Kasie user');
-    user = await prefs.getUser();
-    var firebaseUser = FirebaseAuth.instance.currentUser;
-
-    if (user != null && firebaseUser != null) {
-      pp('$mm _getAuthenticationStatus .......  '
-          '🥬🥬🥬auth is DEFINITELY authenticated and OK');
-      authed = true;
-      fcmBloc.subscribeToTopics('MarshallApp');
-      _getData();
-    } else {
-      pp('$mm _getAuthenticationStatus ....... NOT AUTHENTICATED! '
-          '🌼🌼🌼 ... will clean house!!');
-      authed = false;
-      _navigateToPhoneAuth();
-    }
-  }
+  // void _getAuthenticationStatus() async {
+  //   pp('\n\n$mm _getAuthenticationStatus ....... '
+  //       'check both Firebase user and Kasie user');
+  //   user = prefs.getUser();
+  //   var firebaseUser = FirebaseAuth.instance.currentUser;
+  //
+  //   if (user != null && firebaseUser != null) {
+  //     pp('$mm _getAuthenticationStatus .......  '
+  //         '🥬🥬🥬auth is DEFINITELY authenticated and OK');
+  //     authed = true;
+  //     fcmBloc.subscribeToTopics('MarshallApp');
+  //     _getData();
+  //   } else {
+  //     pp('$mm _getAuthenticationStatus ....... NOT AUTHENTICATED! '
+  //         '🌼🌼🌼 ... will clean house!!');
+  //     authed = false;
+  //     _navigateToPhoneAuth();
+  //   }
+  // }
 
   Future _navigateToPhoneAuth() async {
     pp('$mm ... _navigateToPhoneAuth ....');
     user = await navigateWithScale(
         PhoneAuthSignin(
-          onGoodSignIn: (){},
-          onSignInError: (){},
+          onGoodSignIn: () {},
+          onSignInError: () {},
         ),
         context);
 
@@ -197,17 +200,20 @@ class DashboardState extends State<Dashboard>
 
   void _navigateToScanVehicleForMedia() {
     pp('$mm navigate to ScanVehicleForMedia ...  ');
-    navigateWithScale(const ScanVehicleForMedia(), context);
+    NavigationUtils.navigateTo(
+        context: context,
+        widget: ScanVehicleForMedia(),
+        transitionType: PageTransitionType.leftToRight);
   }
 
   Future _getData() async {
     pp('$mm ................... get data for marshal dashboard ...');
-    user =  prefs.getUser();
+    user = prefs.getUser();
     setState(() {
       busy = true;
     });
     try {
-      colorAndLocale =  prefs.getColorAndLocale();
+      colorAndLocale = prefs.getColorAndLocale();
       // _setTexts();
 
       if (user != null) {
@@ -215,7 +221,7 @@ class DashboardState extends State<Dashboard>
         await _getLandmarks();
         await _getCars();
         await _getDispatches(false);
-        await _getAssociationVehicleMediaRequests(false);
+        // await _getAssociationVehicleMediaRequests(false);
       }
     } catch (e) {
       pp(e);
@@ -223,7 +229,6 @@ class DashboardState extends State<Dashboard>
         showSnackBar(
             padding: 16, message: 'Error getting data', context: context);
       }
-      ;
     }
     //
     setState(() {
@@ -243,7 +248,7 @@ class DashboardState extends State<Dashboard>
   String welcome = '', startSignIn = ' ', firstTime = '';
 
   Future _setTexts() async {
-    colorAndLocale = await prefs.getColorAndLocale();
+    colorAndLocale = prefs.getColorAndLocale();
     dispatchWithScan =
         await translator.translate('dispatchWithScan', colorAndLocale.locale);
     manualDispatch =
@@ -274,9 +279,15 @@ class DashboardState extends State<Dashboard>
   Future _getRoutes() async {
     pp('$mm ... marshal dashboard; getting routes: ${routes.length} ...');
 
-    routes = await listApiDog.getAssociationRoutes(user!.associationId!, false);
+   var routeData = await listApiDog.getAssociationRouteData(user!.associationId!, true);
+   if (routeData != null) {
+     for (var rd in routeData.routeDataList) {
+       if (rd.routePoints.isNotEmpty) {
+         routes.add(rd.route!);
+       }
+     }
+   }
     pp('$mm ... marshal dashboard; routes: ${routes.length} ...');
-    setState(() {});
   }
 
   Future _getCars() async {
@@ -284,7 +295,6 @@ class DashboardState extends State<Dashboard>
 
     cars = await listApiDog.getAssociationCars(user!.associationId!, false);
     pp('$mm ... marshal dashboard; cars: ${cars.length} ...');
-    setState(() {});
   }
 
   Future _getDispatches(bool refresh) async {
@@ -300,16 +310,13 @@ class DashboardState extends State<Dashboard>
     } catch (e) {
       pp(e);
     }
-    setState(() {
-      busy = false;
-    });
+
   }
 
   Future _getLandmarks() async {
     routeLandmarks = await listApiDog.getAssociationRouteLandmarks(
         user!.associationId!, false);
     pp('$mm ... marshal dashboard; routeLandmarks: ${routeLandmarks.length} ...');
-    setState(() {});
   }
 
   @override
@@ -321,12 +328,22 @@ class DashboardState extends State<Dashboard>
     super.dispose();
   }
 
-  void _navigateToScanDispatch() async {
-    pp('$mm _navigateToScanDispatch ......');
+  void _navigateToRoutesForDispatch() async {
+    pp('$mm _navigateToRoutesForDispatch ......');
 
-    navigateWithScale(const DispatchViaScan(), context);
+    NavigationUtils.navigateTo(
+        context: context,
+        widget: RoutesForDispatch(),
+        transitionType: PageTransitionType.leftToRight);
   }
+  void _navigateToCarForRankFee() async {
+    pp('$mm _navigateToCarForRankFee ......');
 
+    NavigationUtils.navigateTo(
+        context: context,
+        widget: CarForRankFee(),
+        transitionType: PageTransitionType.leftToRight);
+  }
   Future _navigateToColor() async {
     pp('$mm _navigateToColor ......');
     await navigateWithScale(
@@ -334,9 +351,10 @@ class DashboardState extends State<Dashboard>
           onLanguageChosen: () {},
         ),
         context);
-    colorAndLocale = await prefs.getColorAndLocale();
+    colorAndLocale = prefs.getColorAndLocale();
     await _setTexts();
   }
+
   void _navigateToMap() {
     navigateWithScale(const AssociationRouteMaps(), context);
   }
@@ -349,7 +367,7 @@ class DashboardState extends State<Dashboard>
           leading: const SizedBox(),
           title: Text(
             marshalText == null ? 'Marshal' : marshalText!,
-            style: myTextStyleLarge(context),
+            style: myTextStyleMedium(context),
           ),
           actions: [
             IconButton(
@@ -381,9 +399,8 @@ class DashboardState extends State<Dashboard>
         body: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(2.0),
               child: Card(
-                shape: getRoundedBorder(radius: 16),
                 elevation: 4,
                 child: Column(
                   children: [
@@ -393,9 +410,10 @@ class DashboardState extends State<Dashboard>
                     Text(
                       user == null
                           ? 'Association Name'
-                          : user!.associationName!,
-                      style: myTextStyleMediumLargeWithColor(
-                          context, Theme.of(context).primaryColor, 18),
+                          : user!.associationName == null
+                              ? 'no association name'
+                              : user!.associationName!,
+                      style: myTextStyleMediumLarge(context, 24),
                     ),
                     const SizedBox(
                       height: 8,
@@ -404,26 +422,9 @@ class DashboardState extends State<Dashboard>
                       user == null ? 'Marshal Name' : user!.name,
                       style: myTextStyleSmall(context),
                     ),
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    SizedBox(
-                        width: 300,
-                        child: ElevatedButton(
-                            style: ButtonStyle(
-                                elevation: const WidgetStatePropertyAll(8.0)),
-                            onPressed: () {
-                              _navigateToScanDispatch();
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Text(dispatchWithScan == null
-                                  ? 'Dispatch with Scan'
-                                  : dispatchWithScan!),
-                            ))),
                     gapH32,
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Row(
                           children: [
@@ -440,8 +441,9 @@ class DashboardState extends State<Dashboard>
                             Text(
                               '$daysForData',
                               style: myTextStyleMediumLargeWithColor(context,
-                                  Theme.of(context).primaryColorLight, 24),
-                            )
+                                  Theme.of(context).primaryColorLight, 16),
+                            ),
+                            gapW32,
                           ],
                         ),
                       ],
@@ -473,33 +475,73 @@ class DashboardState extends State<Dashboard>
                                 color: Theme.of(context).primaryColor,
                                 fontSize: 32,
                                 onTapped: () {}),
-                            TotalWidget(
-                                caption: vehiclesText == null
-                                    ? 'Vehicles'
-                                    : vehiclesText!,
-                                number: cars.length,
-                                color: Colors.grey.shade600,
-                                fontSize: 32,
-                                onTapped: () {}),
-                            TotalWidget(
-                                caption:
-                                    routesText == null ? 'Routes' : routesText!,
-                                number: routes.length,
-                                color: Colors.grey.shade600,
-                                fontSize: 32,
-                                onTapped: () {}),
-                            TotalWidget(
-                                caption: landmarksText == null
-                                    ? 'Landmarks'
-                                    : landmarksText!,
-                                number: routeLandmarks.length,
-                                color: Colors.grey.shade600,
-                                fontSize: 32,
-                                onTapped: () {}),
+                            // TotalWidget(
+                            //     caption: vehiclesText == null
+                            //         ? 'Vehicles'
+                            //         : vehiclesText!,
+                            //     number: cars.length,
+                            //     color: Colors.grey.shade600,
+                            //     fontSize: 32,
+                            //     onTapped: () {}),
+                            // TotalWidget(
+                            //     caption:
+                            //         routesText == null ? 'Routes' : routesText!,
+                            //     number: routes.length,
+                            //     color: Colors.grey.shade600,
+                            //     fontSize: 32,
+                            //     onTapped: () {}),
+                            // TotalWidget(
+                            //     caption: landmarksText == null
+                            //         ? 'Landmarks'
+                            //         : landmarksText!,
+                            //     number: routeLandmarks.length,
+                            //     color: Colors.grey.shade600,
+                            //     fontSize: 32,
+                            //     onTapped: () {}),
                           ],
                         ),
                       ),
                     ),
+                    SizedBox(
+                        width: 300,
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    WidgetStatePropertyAll(Colors.blue),
+                                elevation: const WidgetStatePropertyAll(8.0)),
+                            onPressed: () {
+                              _navigateToRoutesForDispatch();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                'Dispatch Taxi',
+                                style: myTextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,),
+                              ),
+                            ))),
+                    gapH32,
+                    SizedBox(
+                        width: 300,
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    WidgetStatePropertyAll(Colors.green),
+                                elevation: const WidgetStatePropertyAll(8.0)),
+                            onPressed: () {
+                              _navigateToCarForRankFee();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                'Collect Fee Rank',
+                                style: myTextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,),
+                              ),
+                            ))),
+                    gapH32,
                   ],
                 ),
               ),

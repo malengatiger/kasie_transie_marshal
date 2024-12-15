@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class EmptyDashboardContainer extends StatelessWidget {
-  const EmptyDashboardContainer({Key? key}) : super(key: key);
+  const EmptyDashboardContainer({super.key});
 
   @override
   Widget build(BuildContext context) {

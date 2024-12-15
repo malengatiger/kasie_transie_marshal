@@ -23,10 +23,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -61,9 +58,20 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB3finIgPi481q3-GaEDjOLcoPbs664gTs',
-    appId: '1:854189510560:android:e104656a79f7fb4236dec5',
+    appId: '1:854189510560:android:78874c4b00a71e9436dec5',
     messagingSenderId: '854189510560',
     projectId: 'kasie-transie-3',
     storageBucket: 'kasie-transie-3.appspot.com',
   );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyCBCW2jYebHUN609zOFxgTnm0JWP-1Y40s',
+    appId: '1:854189510560:ios:5299ecd4460821b236dec5',
+    messagingSenderId: '854189510560',
+    projectId: 'kasie-transie-3',
+    storageBucket: 'kasie-transie-3.appspot.com',
+    iosClientId: '854189510560-6845bffb6d7pdvq48pe1luecbecumd7n.apps.googleusercontent.com',
+    iosBundleId: 'com.example.kasieTransieMarshal2',
+  );
+
 }

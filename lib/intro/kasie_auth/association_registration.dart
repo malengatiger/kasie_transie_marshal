@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AssociationRegistration extends StatefulWidget {
-  const AssociationRegistration({Key? key}) : super(key: key);
+  const AssociationRegistration({super.key});
 
   @override
   AssociationRegistrationState createState() =>

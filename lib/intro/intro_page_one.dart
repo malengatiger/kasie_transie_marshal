@@ -5,12 +5,11 @@ import 'package:kasie_transie_library/utils/functions.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage(
-      {Key? key,
+      {super.key,
       required this.assetPath,
       required this.title,
       required this.text,
-      this.width})
-      : super(key: key);
+      this.width});
 
   final String assetPath;
   final String title;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
 
 class SplashWidget extends StatefulWidget {
-  const SplashWidget({Key? key}) : super(key: key);
+  const SplashWidget({super.key});
 
   @override
   State<SplashWidget> createState() => _SplashWidgetState();

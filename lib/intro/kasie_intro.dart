@@ -2,15 +2,20 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:kasie_transie_library/auth/phone_auth_signin2.dart';
+import 'package:kasie_transie_library/bloc/app_auth.dart';
 import 'package:kasie_transie_library/bloc/data_api_dog.dart';
+import 'package:kasie_transie_library/data/constants.dart';
+import 'package:kasie_transie_library/data/data_schemas.dart';
 import 'package:kasie_transie_library/utils/emojis.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
-import 'package:kasie_transie_library/utils/navigator_utils.dart';
 import 'package:kasie_transie_library/auth/email_auth_signin.dart';
-import 'package:kasie_transie_library/utils/navigator_utils_old.dart';
+import 'package:kasie_transie_library/utils/navigator_utils.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
-import 'package:kasie_transie_marshal/ui/dashboard.dart';
+import 'package:kasie_transie_marshal/ambassador_ui/ambassador_dashboard.dart';
+import 'package:page_transition/page_transition.dart';
+
+import '../ui/dashboard.dart';
 import 'intro_page_one.dart';
 
 class KasieIntro extends StatefulWidget {
@@ -33,10 +38,11 @@ class KasieIntroState extends State<KasieIntro>
   fb.FirebaseAuth firebaseAuth = fb.FirebaseAuth.instance;
   Prefs prefs = GetIt.instance<Prefs>();
   final DataApiDog dataApiDog = GetIt.instance<DataApiDog>();
+  AppAuth appAuth = GetIt.instance<AppAuth>();
 
   // mrm.User? user;
   String? signInFailed;
-
+  User? user;
   @override
   void initState() {
     _controller = AnimationController(vsync: this);
@@ -47,19 +53,19 @@ class KasieIntroState extends State<KasieIntro>
   void _getAuthenticationStatus() async {
     pp('\n\n$mm _getAuthenticationStatus ....... '
         'check both Firebase user and Kasie user');
-    var user = prefs.getUser();
-    var firebaseUser = firebaseAuth.currentUser;
+    user = prefs.getUser();
+
+    var firebaseUser = appAuth.getUser();
 
     if (user != null && firebaseUser != null) {
       pp('$mm _getAuthenticationStatus .......  '
-          '🥬🥬🥬auth is DEFINITELY authenticated and OK');
+          '🥬🥬🥬auth is DEFINITELY authenticated and OK, will navigate to dashboard ...');
       authed = true;
+      _navigateToDashboard();
     } else {
       pp('$mm _getAuthenticationStatus ....... NOT AUTHENTICATED! '
           '🌼🌼🌼 ... will clean house!!');
       authed = false;
-      //todo - ensure that the right thing gets done!
-      // prefs.deleteUser();
       firebaseAuth.signOut();
       pp('$mm _getAuthenticationStatus .......  '
           '🔴🔴🔴🔴'
@@ -69,31 +75,43 @@ class KasieIntroState extends State<KasieIntro>
     setState(() {});
   }
 
+  _clearUser() async {
+    await firebaseAuth.signOut();
+    prefs.removeUser();
+  }
+
   onSignInWithEmail() async {
     pp('$mm ...  onSignInWithEmail');
-
-    navigateWithScale(EmailAuthSignin(onGoodSignIn: (){
-      onSuccessfulSignIn();
-    }, onSignInError: (){
-      onFailedSignIn();
-    }), context);
+    _clearUser();
+    if (mounted) {
+      NavigationUtils.navigateTo(
+          context: context,
+          widget: EmailAuthSignin(onGoodSignIn: () {
+            onSuccessfulSignIn();
+          }, onSignInError: () {
+            onFailedSignIn();
+          }));
+    }
   }
 
   onSignInWithPhone() async {
     pp('$mm ... onSignInWithPhone ....');
-
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => PhoneAuthSignin(
-             onGoodSignIn: (){
-          pp('$mm ................................'
-              '... onGoodSignIn .... ');
-              onSuccessfulSignIn();
-        }, onSignInError: (){
-          pp('$mm ................................'
-              '... onSignInError ${E.redDot} .... ');
-              onFailedSignIn();
-        },)));
-
+    _clearUser();
+    NavigationUtils.navigateTo(
+        context: context,
+        widget: PhoneAuthSignin(
+          onGoodSignIn: () {
+            pp('$mm ................................'
+                '... onGoodSignIn .... ');
+            onSuccessfulSignIn();
+          },
+          onSignInError: () {
+            pp('$mm ................................'
+                '... onSignInError ${E.redDot} .... ');
+            onFailedSignIn();
+          },
+        ),
+        transitionType: PageTransitionType.leftToRight);
   }
 
   onRegister() {
@@ -102,18 +120,53 @@ class KasieIntroState extends State<KasieIntro>
 
   void onFailedSignIn() {
     pp('$mm ... onFailedSignIn ....');
-
   }
+
   void onSuccessfulSignIn() {
     pp('$mm ................................'
         '... onSuccessfulSignIn .... ');
-    Navigator.of(context).pop();
-    navigateWithScale(
-        const Dashboard(),
-        context);
+    // Navigator.of(context).pop();
+    user = prefs.getUser();
+    if (user != null) {
+      if (user!.userType == Constants.MARSHAL) {
+        NavigationUtils.navigateTo(
+        context: context,
+        widget: MarshalDashboard(),);
+      }
+      if (user!.userType == Constants.AMBASSADOR) {
+        NavigationUtils.navigateTo(
+          context: context,
+          widget: AmbassadorDashboard(),);
+      }
+    }
   }
 
-  void _onPageChanged(int value) {}
+  void _onPageChanged(int value) {
+    pp('$mm onPageChanged ... page: $value');
+    setState(() {
+      currentIndexPage = value;
+    });
+  }
+
+  _navigateToDashboard() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (mounted) {
+      if (user!.userType! == Constants.MARSHAL) {
+        pp('$mm _navigateToMarshalDashboard ...');
+        NavigationUtils.navigateTo(
+            context: context,
+            widget: MarshalDashboard(),
+            transitionType: PageTransitionType.leftToRight);
+      }
+      if (user!.userType! == Constants.AMBASSADOR) {
+        pp('$mm navigate to AmbassadorDashboard ...');
+        NavigationUtils.navigateTo(
+            context: context,
+            widget: AmbassadorDashboard(),
+            transitionType: PageTransitionType.leftToRight);
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -141,7 +194,10 @@ class KasieIntroState extends State<KasieIntro>
             preferredSize: Size.fromHeight(authed ? 80 : 124),
             child: Column(
               children: [
-                Header(onSignInWithEmail: onSignInWithEmail, onSignInWithPhone: onSignInWithPhone, onRegister: onRegister),
+                Header(
+                    onSignInWithEmail: onSignInWithEmail,
+                    onSignInWithPhone: onSignInWithPhone,
+                    onRegister: onRegister),
                 const SizedBox(
                   height: 12,
                 ),
@@ -216,61 +272,74 @@ class KasieIntroState extends State<KasieIntro>
       ),
     ));
   }
-
-
 }
 
 class Header extends StatelessWidget {
-  const Header({Key? key, required this.onSignInWithEmail, required this.onSignInWithPhone, required this.onRegister}) : super(key: key);
+  const Header(
+      {super.key,
+      required this.onSignInWithEmail,
+      required this.onSignInWithPhone,
+      required this.onRegister});
 
   final Function onSignInWithEmail, onSignInWithPhone, onRegister;
   @override
   Widget build(BuildContext context) {
-    return  Card(
-      shape: getRoundedBorder(radius: 16),
+    return Card(
       elevation: 8,
       child: DropdownButton<int>(
         hint: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Text('Please select the kind of sign in', style: myTextStyleMedium(context),),
+          child: Text(
+            'Please select the kind of sign in',
+            style: myTextStyleMedium(context),
+          ),
         ),
         items: const [
           DropdownMenuItem(
               value: 0,
-              child: Row(children: [
-            Icon(Icons.phone),
-            SizedBox(width: 20,),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('Sign in with your phone'),
-            ),
-
-          ],)),
+              child: Row(
+                children: [
+                  Icon(Icons.phone),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('Sign in with your phone'),
+                  ),
+                ],
+              )),
           DropdownMenuItem(
               value: 1,
-              child: Row(children: [
-            Icon(Icons.email),
-            SizedBox(width: 20,),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('Sign in with your email address'),
-            ),
-
-          ],)),
+              child: Row(
+                children: [
+                  Icon(Icons.email),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('Sign in with your email address'),
+                  ),
+                ],
+              )),
           DropdownMenuItem(
               value: 2,
-              child: Row(children: [
-            Icon(Icons.edit),
-            SizedBox(width: 20,),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('Register Your Association'),
-            ),
-
-          ],)),
+              child: Row(
+                children: [
+                  Icon(Icons.edit),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('Register Your Association'),
+                  ),
+                ],
+              )),
         ],
         onChanged: (index) {
-          switch(index) {
+          switch (index) {
             case 0:
               onSignInWithPhone();
               break;
@@ -280,7 +349,6 @@ class Header extends StatelessWidget {
             case 2:
               onRegister();
               break;
-
           }
         },
       ),
