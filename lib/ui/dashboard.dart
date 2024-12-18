@@ -19,7 +19,6 @@ import 'package:kasie_transie_library/widgets/scanners/scan_vehicle_for_media.da
 import 'package:kasie_transie_library/widgets/timer_widget.dart';
 import 'package:kasie_transie_library/auth/phone_auth_signin2.dart';
 import 'package:kasie_transie_library/widgets/vehicle_widgets/routes_for_dispatch.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kasie_transie_library/widgets/vehicle_widgets/cars_for_rank_fee.dart';
 
@@ -59,7 +58,6 @@ class MarshalDashboardState extends State<MarshalDashboard>
     _listen();
     user = prefs.getUser();
     _setTexts();
-    // _getAuthenticationStatus();
   }
 
   void _listen() async {
@@ -151,26 +149,6 @@ class MarshalDashboardState extends State<MarshalDashboard>
           context: context);
     }
   }
-
-  // void _getAuthenticationStatus() async {
-  //   pp('\n\n$mm _getAuthenticationStatus ....... '
-  //       'check both Firebase user and Kasie user');
-  //   user = prefs.getUser();
-  //   var firebaseUser = FirebaseAuth.instance.currentUser;
-  //
-  //   if (user != null && firebaseUser != null) {
-  //     pp('$mm _getAuthenticationStatus .......  '
-  //         '🥬🥬🥬auth is DEFINITELY authenticated and OK');
-  //     authed = true;
-  //     fcmBloc.subscribeToTopics('MarshallApp');
-  //     _getData();
-  //   } else {
-  //     pp('$mm _getAuthenticationStatus ....... NOT AUTHENTICATED! '
-  //         '🌼🌼🌼 ... will clean house!!');
-  //     authed = false;
-  //     _navigateToPhoneAuth();
-  //   }
-  // }
 
   Future _navigateToPhoneAuth() async {
     pp('$mm ... _navigateToPhoneAuth ....');
@@ -341,7 +319,7 @@ class MarshalDashboardState extends State<MarshalDashboard>
 
     NavigationUtils.navigateTo(
         context: context,
-        widget: CarForRankFee(),
+        widget: CarForRankFee(associationId: user!.associationId!,),
         );
   }
   Future _navigateToColor() async {
@@ -369,32 +347,7 @@ class MarshalDashboardState extends State<MarshalDashboard>
             marshalText == null ? 'Marshal' : marshalText!,
             style: myTextStyleMedium(context),
           ),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  _navigateToMap();
-                },
-                icon: Icon(
-                  Icons.map,
-                  color: Theme.of(context).primaryColor,
-                )),
-            IconButton(
-                onPressed: () {
-                  _navigateToScanVehicleForMedia();
-                },
-                icon: Icon(
-                  Icons.camera_alt,
-                  color: Theme.of(context).primaryColor,
-                )),
-            IconButton(
-                onPressed: () {
-                  _navigateToColor();
-                },
-                icon: Icon(
-                  Icons.color_lens,
-                  color: Theme.of(context).primaryColor,
-                )),
-          ],
+
         ),
         body: Stack(
           children: [
