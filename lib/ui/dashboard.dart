@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:kasie_transie_library/bloc/list_api_dog.dart';
 import 'package:kasie_transie_library/data/color_and_locale.dart';
@@ -12,6 +13,8 @@ import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/utils/navigator_utils.dart';
 import 'package:kasie_transie_library/utils/navigator_utils_old.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
+import 'package:kasie_transie_library/widgets/vehicle_widgets/car_photo_taker.dart';
+
 import 'package:kasie_transie_library/widgets/days_drop_down.dart';
 import 'package:kasie_transie_library/widgets/language_and_color_chooser.dart';
 import 'package:kasie_transie_library/widgets/scanners/dispatch_helper.dart';
@@ -179,9 +182,9 @@ class MarshalDashboardState extends State<MarshalDashboard>
   void _navigateToScanVehicleForMedia() {
     pp('$mm navigate to ScanVehicleForMedia ...  ');
     NavigationUtils.navigateTo(
-        context: context,
-        widget: ScanVehicleForMedia(),
-        );
+      context: context,
+      widget: ScanVehicleForMedia(),
+    );
   }
 
   Future _getData() async {
@@ -257,14 +260,15 @@ class MarshalDashboardState extends State<MarshalDashboard>
   Future _getRoutes() async {
     pp('$mm ... marshal dashboard; getting routes: ${routes.length} ...');
 
-   var routeData = await listApiDog.getAssociationRouteData(user!.associationId!, true);
-   if (routeData != null) {
-     for (var rd in routeData.routeDataList) {
-       if (rd.routePoints.isNotEmpty) {
-         routes.add(rd.route!);
-       }
-     }
-   }
+    var routeData =
+        await listApiDog.getAssociationRouteData(user!.associationId!, true);
+    if (routeData != null) {
+      for (var rd in routeData.routeDataList) {
+        if (rd.routePoints.isNotEmpty) {
+          routes.add(rd.route!);
+        }
+      }
+    }
     pp('$mm ... marshal dashboard; routes: ${routes.length} ...');
   }
 
@@ -288,7 +292,6 @@ class MarshalDashboardState extends State<MarshalDashboard>
     } catch (e) {
       pp(e);
     }
-
   }
 
   Future _getLandmarks() async {
@@ -310,18 +313,22 @@ class MarshalDashboardState extends State<MarshalDashboard>
     pp('$mm _navigateToRoutesForDispatch ......');
 
     NavigationUtils.navigateTo(
-        context: context,
-        widget: RoutesForDispatch(),
-        );
+      context: context,
+      widget: RoutesForDispatch(),
+    );
   }
+
   void _navigateToCarForRankFee() async {
     pp('$mm _navigateToCarForRankFee ......');
 
     NavigationUtils.navigateTo(
-        context: context,
-        widget: CarForRankFee(associationId: user!.associationId!,),
-        );
+      context: context,
+      widget: CarForRankFee(
+        associationId: user!.associationId!,
+      ),
+    );
   }
+
   Future _navigateToColor() async {
     pp('$mm _navigateToColor ......');
     await navigateWithScale(
@@ -342,13 +349,19 @@ class MarshalDashboardState extends State<MarshalDashboard>
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          leading: const SizedBox(),
-          title: Text(
-            marshalText == null ? 'Marshal' : marshalText!,
-            style: myTextStyleMedium(context),
-          ),
-
-        ),
+            leading: const SizedBox(),
+            title: Text(
+              marshalText == null ? 'Marshal' : marshalText!,
+              style: myTextStyleMedium(context),
+            ),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    NavigationUtils.navigateTo(
+                        context: context, widget: CarPhotoTaker());
+                  },
+                  icon: FaIcon(FontAwesomeIcons.camera)),
+            ]),
         body: Stack(
           children: [
             Padding(
@@ -376,31 +389,31 @@ class MarshalDashboardState extends State<MarshalDashboard>
                       style: myTextStyleSmall(context),
                     ),
                     gapH32,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Row(
-                          children: [
-                            DaysDropDown(
-                                onDaysPicked: (days) {
-                                  daysForData = days;
-                                  setState(() {});
-                                  _getDispatches(true);
-                                },
-                                hint: days == null ? 'Days' : days!),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            Text(
-                              '$daysForData',
-                              style: myTextStyleMediumLargeWithColor(context,
-                                  Theme.of(context).primaryColorLight, 16),
-                            ),
-                            gapW32,
-                          ],
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.end,
+                    //   children: [
+                    //     Row(
+                    //       children: [
+                    //         DaysDropDown(
+                    //             onDaysPicked: (days) {
+                    //               daysForData = days;
+                    //               setState(() {});
+                    //               _getDispatches(true);
+                    //             },
+                    //             hint: days == null ? 'Days' : days!),
+                    //         const SizedBox(
+                    //           width: 20,
+                    //         ),
+                    //         Text(
+                    //           '$daysForData',
+                    //           style: myTextStyleMediumLargeWithColor(context,
+                    //               Theme.of(context).primaryColorLight, 16),
+                    //         ),
+                    //         gapW32,
+                    //       ],
+                    //     ),
+                    //   ],
+                    // ),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(24.0),
@@ -470,8 +483,9 @@ class MarshalDashboardState extends State<MarshalDashboard>
                               child: Text(
                                 'Dispatch Taxi',
                                 style: myTextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,),
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                ),
                               ),
                             ))),
                     gapH32,
@@ -488,10 +502,11 @@ class MarshalDashboardState extends State<MarshalDashboard>
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: Text(
-                                'Collect Fee Rank',
+                                'Collect Rank Fees',
                                 style: myTextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,),
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                ),
                               ),
                             ))),
                     gapH32,
