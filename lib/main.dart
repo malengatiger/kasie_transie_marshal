@@ -11,6 +11,7 @@ import 'package:kasie_transie_library/data/data_schemas.dart' as lib;
 import 'package:kasie_transie_library/messaging/fcm_bloc.dart';
 import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
+import 'package:kasie_transie_library/widgets/scanners/kasie/scanner_four.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:get_it/get_it.dart';
 import 'firebase_options.dart';

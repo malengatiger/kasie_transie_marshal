@@ -13,9 +13,8 @@ import 'package:kasie_transie_library/utils/functions.dart';
 import 'package:kasie_transie_library/utils/navigator_utils.dart';
 import 'package:kasie_transie_library/utils/navigator_utils_old.dart';
 import 'package:kasie_transie_library/utils/prefs.dart';
-import 'package:kasie_transie_library/widgets/vehicle_widgets/car_photo_taker.dart';
+import 'package:kasie_transie_library/widgets/ambassador/association_vehicle_photo_handler.dart';
 
-import 'package:kasie_transie_library/widgets/days_drop_down.dart';
 import 'package:kasie_transie_library/widgets/language_and_color_chooser.dart';
 import 'package:kasie_transie_library/widgets/scanners/dispatch_helper.dart';
 import 'package:kasie_transie_library/widgets/scanners/scan_vehicle_for_media.dart';
@@ -49,6 +48,7 @@ class MarshalDashboardState extends State<MarshalDashboard>
   lib.VehicleMediaRequest? vehicleMediaRequest;
   ListApiDog listApiDog = GetIt.instance<ListApiDog>();
   Prefs prefs = GetIt.instance<Prefs>();
+  FCMService fcmService = GetIt.instance<FCMService>();
 
   late StreamSubscription<lib.DispatchRecord> _dispatchStreamSubscription;
   late StreamSubscription<lib.VehicleMediaRequest> _mediaRequestSubscription;
@@ -74,15 +74,15 @@ class MarshalDashboardState extends State<MarshalDashboard>
     });
     //
     _mediaRequestSubscription =
-        fcmBloc.vehicleMediaRequestStream.listen((event) {
-      pp('$mm fcmBloc.vehicleMediaRequestStream delivered ${event.vehicleReg}');
+        fcmService.vehicleMediaRequestStream.listen((event) {
+      pp('$mm fcmService.vehicleMediaRequestStream delivered ${event.vehicleReg}');
       if (mounted) {
         _confirmNavigationToPhotos(event);
       }
     });
     //
-    _routeUpdateSubscription = fcmBloc.routeUpdateRequestStream.listen((event) {
-      pp('$mm fcmBloc.routeUpdateRequestStream delivered: ${event.routeName}');
+    _routeUpdateSubscription = fcmService.routeUpdateRequestStream.listen((event) {
+      pp('$mm fcmService.routeUpdateRequestStream delivered: ${event.routeName}');
       _startRouteUpdate(event);
     });
   }
@@ -358,7 +358,7 @@ class MarshalDashboardState extends State<MarshalDashboard>
               IconButton(
                   onPressed: () {
                     NavigationUtils.navigateTo(
-                        context: context, widget: CarPhotoTaker());
+                        context: context, widget: AssociationVehiclePhotoHandler());
                   },
                   icon: FaIcon(FontAwesomeIcons.camera)),
             ]),
