@@ -34,7 +34,7 @@ class AmbassadorDashboard extends StatefulWidget {
 class AmbassadorDashboardState extends State<AmbassadorDashboard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  static const mm = '😡😡😡😡AmbassadorDashboard: 💪 ';
+  static const mm = '🦋🦋🦋🦋AmbassadorDashboard: 💪 ';
 
   lib.User? user;
   var cars = <lib.Vehicle>[];
